@@ -48,16 +48,16 @@ int main()
     float *detections;
     if(model_select == 0)
     {
-        cfgfile = "/home/m/Code/darknet_AlexeyAB/cfg/yolov3.cfg";
-        weightfile = "/home/m/Code/darknet_AlexeyAB/weights/yolov3.weights";
+        cfgfile = "/home/pi/Code/darknet_AlexeyAB/cfg/yolov3.cfg";
+        weightfile = "/home/pi/Code/darknet_AlexeyAB/weights/yolov3.weights";
         thresh = 0.5;
         hier_thresh = 0.9;
         detect_interval = 30;
     }
     else if(model_select == 1)
     {
-        cfgfile = "/home/m/Code/darknet_AlexeyAB/cfg/yolov3-tiny.cfg";
-        weightfile = "/home/m/Code/darknet_AlexeyAB/weights/yolov3-tiny.weights";
+        cfgfile = "/home/pi/Code/darknet_AlexeyAB/cfg/yolov3-tiny.cfg";
+        weightfile = "/home/pi/Code/darknet_AlexeyAB/weights/yolov3-tiny.weights";
         detect_interval = 5;
         thresh = 0.2;
         hier_thresh = 0.5;
@@ -92,17 +92,20 @@ int main()
     }
 #else
 
-    bool is_show_frame = true;
+    bool is_show_frame = false;
     bool is_show_detections = true;
-    bool is_detect_in_thread = true;
+    bool is_detect_in_thread = false;
     bool is_print_bboxes_info = false;
 
-    VideoCapture cap(1);
+    VideoCapture cap(0);
     bool isOpen = true;  
     if(!cap.isOpened())  
         isOpen = false;
     if(!isOpen)
-        return -1;
+    {
+    printf("No camera found \n");
+    return -1;
+    }
     Mat frame; 
     detections = (float*)calloc(255*6, sizeof(float));
     time_t t0, t1;

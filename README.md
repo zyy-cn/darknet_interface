@@ -29,7 +29,8 @@ $ ln -s darknet.so libdarknet.so
 ```
 $ git clone https://github.com/zyy-cn/darknet_library.git
 $ cd darknet_library/lib_detector
-$ g++ -fPIC -shared -o libdetector.so detector.cpp -I. -I../../darknet/src -I/PATH/TO/YOUR/OPENCV/include -L../../darknet/ -L/PATH/TO/YOUR/OPENCV/lib -ldarknet -fopenmp -lgomp -DOPENCV
+$ chmod 777 *
+$ ./gcc.sh
 $ cd ..
 ```
 after do this you can get "libdetector.so".Note that your must compile OPENCV firstly if you want to use it.
@@ -37,7 +38,8 @@ after do this you can get "libdetector.so".Note that your must compile OPENCV fi
 #### step 3. Run demo
 ```
 $ cd examples
-$ g++ -std=c++11 -o darknet_detector_test darknet_detector_test.cpp -I../lib_detector -I/PATH/TO/YOUR/OPENCV/include -L../lib_detector -L/PATH/TO/YOUR/OPENCV/lib -L../../darknet_AlexeyAB -ldetector -lopencv_core -lopencv_imgproc -lopencv_highgui -lopencv_videoio -fopenmp -pthread -lgomp -ldarknet -DOPENCV
+$ chmod 777 *
+$ ./gcc.sh
 $ ln -s ../lib_detector/libdetector.so libdetector.so
 $ ln -s ../../darknet/libdarknet.so libdarknet.so
 $ ./darknet_detector_test

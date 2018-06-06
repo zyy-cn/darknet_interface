@@ -1,1 +1,0 @@
-g++ -fPIC -shared -o libdetector.so detector.cpp -I. -I../../darknet_AlexeyAB/src -I/home/m/local_install/include -L/home/m/Code/darknet_AlexeyAB/ -L/home/m/local_install/lib -ldarknet -fopenmp -lgomp -DOPENCV -DOPENBLAS
