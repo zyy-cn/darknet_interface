@@ -1,6 +1,6 @@
 ## Darknet Interface
 
-This reposity is an INTERFACE for darknet, which allow you to use darknet detector in your own CPP program to do something interesting (like object detect) by link with "libdarknet.so" and "libdetector.so".
+This reposity is an INTERFACE for darknet, which allow you to use darknet detector in your own CPP program to do something interesting (like object detect in RaspberryPI) by link with "libdarknet.so" and "libdetector.so".
 
 ## How to use
 #### Step 1. Compile your darknet first
