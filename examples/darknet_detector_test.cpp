@@ -48,16 +48,16 @@ int main()
     float *detections;
     if(model_select == 0)
     {
-        cfgfile = "/home/pi/Code/darknet_AlexeyAB/cfg/yolov3.cfg";
-        weightfile = "/home/pi/Code/darknet_AlexeyAB/weights/yolov3.weights";
+        cfgfile = "/home/pi/Code/darknet_Alexey/cfg/yolov3.cfg";
+        weightfile = "/home/pi/Code/darknet_Alexey/weights/yolov3.weights";
         thresh = 0.5;
         hier_thresh = 0.9;
         detect_interval = 30;
     }
     else if(model_select == 1)
     {
-        cfgfile = "/home/pi/Code/darknet_AlexeyAB/cfg/yolov3-tiny.cfg";
-        weightfile = "/home/pi/Code/darknet_AlexeyAB/weights/yolov3-tiny.weights";
+        cfgfile = "/home/pi/Code/darknet_Alexey/cfg/yolov3-tiny.cfg";
+        weightfile = "/home/pi/Code/darknet_Alexey/weights/yolov3-tiny.weights";
         detect_interval = 5;
         thresh = 0.2;
         hier_thresh = 0.5;
@@ -67,7 +67,7 @@ int main()
     detector_init(cfgfile, weightfile);
 
 #ifndef OPENCV
-    char *filename1 = "/home/m/Code/darknet_AlexeyAB/data/person.jpg";
+    char *filename1 = "/home/m/Code/darknet_Alexey/data/person.jpg";
     detections = test_detector(filename1, thresh, hier_thresh, &num_output_class, &time_consumed);
     printf("Predicted in %f seconds.\n", time_consumed);
     detections = test_detector(filename1, thresh, hier_thresh, &num_output_class, &time_consumed);
