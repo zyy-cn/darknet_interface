@@ -1,0 +1,1 @@
+g++ -std=c++11 -o darknet_detector_test darknet_detector_test.cpp -I../lib_detector -I/home/m/local_install/include -L../lib_detector -L/home/m/local_install/lib -L../../darknet_AlexeyAB -ldetector -lopencv_core -lopencv_imgproc -lopencv_highgui -lopencv_videoio -fopenmp -pthread -lgomp -ldarknet -DOPENCV
