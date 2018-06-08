@@ -1,6 +1,6 @@
 ## Darknet Interface
 
-This reposity is an INTERFACE for darknet, which allow you to use darknet detector in your own CPP program to do something interesting (like object detect in Raspberry PI) by link with "libdarknet.so" and "libdetector.so".
+This repository is an INTERFACE for darknet, which allow you to use darknet detector in your own CPP program to do something interesting (like object detect in Raspberry PI) by link with "libdarknet.so" and "libdetector.so".
 
 ## How to use
 #### Step 1. Compile your darknet firstly
@@ -18,14 +18,14 @@ and then:
 ```
 $ make -j4
 ```
-after do this you can find "libdarknet.so" in darknet reposity folder.If the name of this shared library is "darknet.so", you should change it to "libdarknet.so" manually:
+after do this you can find "libdarknet.so" in darknet repository folder.If the name of this shared library is "darknet.so", you should change it to "libdarknet.so" manually:
 ```
 $ mv darknet.so libdarknet.so
 or
 $ ln -s darknet.so libdarknet.so
 ```
 
-#### Step 2. Clone this reposity beside the darknet you just cloned
+#### Step 2. Clone this repository beside the darknet you just cloned
 ```
 $ git clone https://github.com/zyy-cn/darknet_library.git
 $ cd darknet_library/lib_detector
