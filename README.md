@@ -27,18 +27,16 @@ $ ln -s darknet.so libdarknet.so
 
 #### Step 2. Clone this repository beside the darknet you just cloned
 ```
-$ git clone https://github.com/zyy-cn/darknet_library.git
-$ cd darknet_library/lib_detector
+$ git clone https://github.com/zyy-cn/darknet_library.git darknet_library
+$ cd darknet_library/src
 $ chmod 777 *
 $ ./gcc.sh
 $ cd ..
 ```
-after do this you can get "libdetector.so".Note that your must compile and install OPENCV firstly if you want to use it.
+after do this you can get "libdetector.so" in darknet_library/lib. Note that your must compile and install OPENCV firstly and set $OPENCV_INCLUDE_PATH and $OPENCV_LIB_PATH variants in "gcc.sh" currectly if you want to use it.
 
 #### step 3. Run demo
 ```
-$ cd examples
-$ chmod 777 *
-$ ./gcc.sh
+$ cd bin
 $ ./darknet_detector_test
 ```
