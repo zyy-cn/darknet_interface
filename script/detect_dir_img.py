@@ -11,7 +11,7 @@ def main(argv):
         print('  $ python2 detect_dir_img.py ${cfg} ${weights} ${input directory} ${output directory}:')
     else:
         # ====== init ======
-        detector = cdll.LoadLibrary('/home/m/Code/darknet_library/lib/libdetector_c.so')
+        detector = cdll.LoadLibrary('../lib/libdetector_c.so')
         # cfgfile = "/home/m/Code/darknet_Alexey/cfg/yolov3.cfg"
         # weightfile = "/home/m/Code/darknet_Alexey/weights/yolov3.weights"
         cfgfile = argv[1]
