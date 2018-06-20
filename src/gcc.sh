@@ -1,6 +1,6 @@
 # set your opencv install 
-OPENCV_INCLUDE_PATH=/home/m/local_install/include
-OPENCV_LIB_PATH=/home/m/local_install/lib
+OPENCV_INCLUDE_PATH=/home/pi/local_install/include
+OPENCV_LIB_PATH=/home/pi/local_install/lib
 
 DETECTOR_BIN_PATH=../bin
 DETECTOR_LIB_PATH=../lib
