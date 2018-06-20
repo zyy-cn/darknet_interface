@@ -30,6 +30,12 @@ int compare_by_lefts(const void *a_ptr, const void *b_ptr) {
     return delta < 0 ? -1 : delta > 0 ? 1 : 0;
 }
 
+int say_hello()
+{
+    printf("hello, this is a detector!");
+    return 0;
+}
+
 void detector_init(char *cfgfile, char *weightfile)
 {
     net = parse_network_cfg_custom(cfgfile, 1); // set batch=1
