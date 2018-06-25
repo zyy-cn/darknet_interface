@@ -1,12 +1,11 @@
 #include "detector.h"
 
-#ifdef GPU
-#include "cuda_runtime.h"
-#endif
-
 #ifdef OPENCV
 #ifdef __cplusplus
 #include <opencv2/core/core.hpp>
+#ifdef GPU
+#include "cuda_runtime.h"
+#endif
 #else
 #include <opencv2/core/types_c.h>
 #endif
@@ -74,9 +73,11 @@ float* detect(image im, float thresh, float hier_thresh, int* num_output_class, 
     int nboxes = 0;
     detection *dets = get_network_boxes(&net, im.w, im.h, thresh, hier_thresh, 0, 1, &nboxes, letterbox);
     if (nms) do_nms_sort(dets, nboxes, l.classes, nms);
+    printf(" nboxes: %d, l.classes: %d \n", nboxes, l.classes);
 
     int selected_detections_num;
     detection_with_class* selected_detections = get_actual_detections(dets, nboxes, thresh, &selected_detections_num);
+    printf(" selected_detections_num: %d \n", selected_detections_num);
 
     // save output
     qsort(selected_detections, selected_detections_num, sizeof(*selected_detections), compare_by_lefts);
