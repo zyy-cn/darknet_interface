@@ -37,7 +37,7 @@ void detect_in_thread(Mat frame_detect, float* detections_output, int* num_outpu
 
 int main()
 {
-    int model_select = 1; // model 0 for original yolo model and 1 for tiny model 
+    int model_select = 0; // model 0 for original yolo model and 1 for tiny model 
     char  *cfgfile;
     char *weightfile;
     double detect_interval;
@@ -94,10 +94,10 @@ int main()
 
     bool is_show_frame = true;
     bool is_show_detections = true;
-    bool is_detect_in_thread = true;
+    bool is_detect_in_thread = false;
     bool is_print_bboxes_info = false;
 
-    VideoCapture cap(0);
+    VideoCapture cap(1);
     bool isOpen = true;  
     if(!cap.isOpened())  
         isOpen = false;
