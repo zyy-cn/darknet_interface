@@ -39,31 +39,16 @@ int say_hello()
 
 void detector_init(char *cfgfile, char *weightfile)
 {
-#ifdef GPU
-    int ngpus = 1;
-    int gpus[1] = {0};
-    network *nets = (network*)calloc(ngpus, sizeof(network));
-    srand(time(0));
-    int seed = rand();
-    int i;
-    for(i = 0; i < ngpus; ++i){
-        srand(seed);
-        cuda_set_device(gpus[i]);
-        nets[i] = parse_network_cfg(cfgfile);
-        if(weightfile){
-            load_weights(&nets[i], weightfile);
-        }
-    }
-    srand(time(0));
-    net = nets[0];
-#else
+
     net = parse_network_cfg_custom(cfgfile, 1); // set batch=1
+#ifdef GPU
+    //cuda_set_device(0);
+#endif
     if(weightfile){
         load_weights(&net, weightfile);
     }
     fuse_conv_batchnorm(net);
     srand(2222222);
-#endif
     return;
 }
 
