@@ -38,14 +38,16 @@ int say_hello()
 
 void detector_init(char *cfgfile, char *weightfile)
 {
-
-    net = parse_network_cfg_custom(cfgfile, 1); // set batch=1
 #ifdef GPU
-    //cuda_set_device(0);
+    cuda_set_device(0);
 #endif
+    net = parse_network_cfg_custom(cfgfile, 1); // set batch=1
+
     if(weightfile){
         load_weights(&net, weightfile);
     }
+    layer l = net.layers[net.n - 1];
+
     fuse_conv_batchnorm(net);
     srand(2222222);
     return;
@@ -73,11 +75,9 @@ float* detect(image im, float thresh, float hier_thresh, int* num_output_class, 
     int nboxes = 0;
     detection *dets = get_network_boxes(&net, im.w, im.h, thresh, hier_thresh, 0, 1, &nboxes, letterbox);
     if (nms) do_nms_sort(dets, nboxes, l.classes, nms);
-    printf(" nboxes: %d, l.classes: %d \n", nboxes, l.classes);
 
     int selected_detections_num;
     detection_with_class* selected_detections = get_actual_detections(dets, nboxes, thresh, &selected_detections_num);
-    printf(" selected_detections_num: %d \n", selected_detections_num);
 
     // save output
     qsort(selected_detections, selected_detections_num, sizeof(*selected_detections), compare_by_lefts);
