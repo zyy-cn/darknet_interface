@@ -41,7 +41,8 @@ $ chmod 777 *
 $ ./gcc.sh
 $ cd ..
 ```
-after do this you can get "libdetector.so" in darknet_library/lib. Note that your must compile and install OPENCV firstly and set $OPENCV_INCLUDE_PATH and $OPENCV_LIB_PATH variants in "gcc.sh" currectly if you want to use it. If you decide to use your GPU and CUDNN on step 1, "IS_USE_GPU" and "IS_USE_CUDNN" should be set to "1" correspondingly, or "0" if not.
+after do this you can get "libdetector.so" in darknet_library/lib. Note that your must compile and install OPENCV firstly and set $OPENCV_INCLUDE_PATH and $OPENCV_LIB_PATH variants in "gcc.sh" currectly if you want to use it.   
+If you decide to use your GPU and CUDNN on step 1, "IS_USE_GPU" and "IS_USE_CUDNN" should be set to "1" correspondingly, and "0" if not.
 
 #### step 3. Run demo
 ```
