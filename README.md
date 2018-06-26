@@ -50,4 +50,4 @@ $ ./darknet_detector_test
 ```
 
 ## TODO
-- [ ] Add GPU support
+- [x] Add GPU support
