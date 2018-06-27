@@ -1,6 +1,6 @@
 ## Darknet Interface
 
-This repository is an INTERFACE for darknet, which allow you to use darknet detector in your own program to do something interesting (like object detect in Raspberry Pi) by linking with "libdarknet.so" and "libdetector.so".
+This repository is an INTERFACE for darknet, which allow you to use darknet detector in your own program(C, C++, Python, etc...) to do something interesting (like object detect use YOLO in Raspberry PI). by linking with "libdarknet.so" and "libdetector.so".
 
 ## How to use
 #### Step 1. Compile your darknet
@@ -35,13 +35,13 @@ $ ln -s darknet.so libdarknet.so
 
 #### Step 2. Clone this repository beside the darknet you just cloned
 ```
-$ git clone https://github.com/zyy-cn/darknet_library.git darknet_library
-$ cd darknet_library/src
+$ git clone https://github.com/zyy-cn/darknet_interface.git darknet_interface
+$ cd darknet_interface/src
 $ chmod 777 *
 $ ./gcc.sh
 $ cd ..
 ```
-after do this you can get "libdetector.so" in darknet_library/lib. Note that your must compile and install OPENCV firstly and set $OPENCV_INCLUDE_PATH and $OPENCV_LIB_PATH variants in "gcc.sh" currectly if you want to use it.   
+after do this you can get "libdetector.so" in darknet_interface/lib. Note that your must compile and install OPENCV firstly and set $OPENCV_INCLUDE_PATH and $OPENCV_LIB_PATH variants in "gcc.sh" currectly if you want to use it.   
 If you decide to use your GPU and CUDNN on step 1, "IS_USE_GPU" and "IS_USE_CUDNN" should be set to "1" correspondingly, and "0" if not.
 
 #### step 3. Run demo
