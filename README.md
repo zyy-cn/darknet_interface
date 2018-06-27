@@ -1,6 +1,6 @@
 ## Darknet Interface
 
-This repository is an INTERFACE for darknet, which allow you to use darknet detector in your own program(C, C++, Python, etc...) to do something interesting (like object detect use YOLO in Raspberry PI). by linking with "libdarknet.so" and "libdetector.so".
+This repository is an INTERFACE for darknet, which allow you to use darknet detector in your own program(C, C++, Python, etc...) to do something interesting (like object detect use YOLO in Raspberry PI) by linking with "libdarknet.so" and "libdetector.so".
 
 ## How to use
 #### Step 1. Compile your darknet
