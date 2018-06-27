@@ -35,10 +35,7 @@ void detect_mat(Mat frame_detect, float* detections_output, int* num_output_clas
         detections_output[i*6+5] = detections[i*6+5];// ith detection's height of bbox
     }
     if(time_consumed)
-    {
         *time_consumed = (what_is_the_time_now() - time);
-        printf("Predicted in %f seconds.\n", *time_consumed);
-    }
 }
 #endif
 
