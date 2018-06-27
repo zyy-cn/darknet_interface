@@ -15,36 +15,43 @@ int FRAME_WINDOW_HEIGHT = 240;
 using namespace std;
 using namespace cv;  
 
-void detect_in_thread(Mat frame_detect, float* detections_output, int* num_output_class, double* time_consumed, float thresh, float hier_thresh)
+void detect_mat(Mat frame_detect, float* detections_output, int* num_output_class, double* time_consumed, float thresh, float hier_thresh)
 {
-        IplImage input = IplImage(frame_detect);
-        float* detections = test_detector_cv(&input, thresh, hier_thresh, num_output_class, time_consumed);
+    double time = what_is_the_time_now();
+    IplImage input = IplImage(frame_detect);// convert image format from mat to iplimage
+
+    // do detect in an iplimage converted from mat
+    float* detections = test_detector_cv(&input, thresh, hier_thresh, num_output_class);
+    for(int i = 0; i < *num_output_class; i++)
+    {
+        printf("%.0f: %.0f%%", detections[i*6+0],	detections[i*6+1] * 100);
+        printf("\t(left_x: %4.0f   top_y: %4.0f   width: %4.0f   height: %4.0f)\n",
+        detections[i*6+2], detections[i*6+3], detections[i*6+4], detections[i*6+5]);
+        detections_output[i*6+0] = detections[i*6+0];
+        detections_output[i*6+1] = detections[i*6+1];
+        detections_output[i*6+2] = detections[i*6+2];
+        detections_output[i*6+3] = detections[i*6+3];
+        detections_output[i*6+4] = detections[i*6+4];
+        detections_output[i*6+5] = detections[i*6+5];
+    }
+    if(time_consumed)
+    {
+        *time_consumed = (what_is_the_time_now() - time);
         printf("Predicted in %f seconds.\n", *time_consumed);
-        for(int i = 0; i < *num_output_class; i++)
-        {
-            printf("%.0f: %.0f%%", detections[i*6+0],	detections[i*6+1] * 100);
-            printf("\t(left_x: %4.0f   top_y: %4.0f   width: %4.0f   height: %4.0f)\n",
-            detections[i*6+2], detections[i*6+3], detections[i*6+4], detections[i*6+5]);
-            detections_output[i*6+0] = detections[i*6+0];
-            detections_output[i*6+1] = detections[i*6+1];
-            detections_output[i*6+2] = detections[i*6+2];
-            detections_output[i*6+3] = detections[i*6+3];
-            detections_output[i*6+4] = detections[i*6+4];
-            detections_output[i*6+5] = detections[i*6+5];
-        }
+    }
 }
 #endif
 
 int main()
 {
-    int model_select = 0; // model 0 for original yolo model and 1 for tiny model 
+    int model_select = 0; // model 0 for the original yolov3 model and 1 for its tiny counterpart 
     char  *cfgfile;
     char *weightfile;
     double detect_interval;
+    double time_consumed = -1;
     float thresh;
     float hier_thresh;
     int num_output_class = 0;
-    double time_consumed = -1;
     float *detections;
     if(model_select == 0)
     {
@@ -68,69 +75,63 @@ int main()
 
 #ifndef OPENCV
     char *filename1 = "../../darknet_Alexey/data/person.jpg";
-    detections = test_detector(filename1, thresh, hier_thresh, &num_output_class, &time_consumed);
-    printf("Predicted in %f seconds.\n", time_consumed);
-    detections = test_detector(filename1, thresh, hier_thresh, &num_output_class, &time_consumed);
-    printf("Predicted in %f seconds.\n", time_consumed);
-    detections = test_detector(filename1, thresh, hier_thresh, &num_output_class, &time_consumed);
-    printf("Predicted in %f seconds.\n", time_consumed);
-    detections = test_detector(filename1, thresh, hier_thresh, &num_output_class, &time_consumed);
-    printf("Predicted in %f seconds.\n", time_consumed);
-    detections = test_detector(filename1, thresh, hier_thresh, &num_output_class, &time_consumed);
-    printf("Predicted in %f seconds.\n", time_consumed);
-    detections = test_detector(filename1, thresh, hier_thresh, &num_output_class, &time_consumed);
-    printf("Predicted in %f seconds.\n", time_consumed);
-    detections = test_detector(filename1, thresh, hier_thresh, &num_output_class, &time_consumed);
-    printf("Predicted in %f seconds.\n", time_consumed);
-
-    printf("num_output_class:%d\n", num_output_class);
-    for(int i = 0; i < num_output_class; i++)
+    
+    for(double time, int i = 0; i < 10; i++)
     {
-        printf("%.0f: %.0f%%", detections[i*6+0],	detections[i*6+1] * 100);
-        printf("\t(left_x: %4.0f   top_y: %4.0f   width: %4.0f   height: %4.0f)\n",
-            detections[i*6+2], detections[i*6+3], detections[i*6+4], detections[i*6+5]);
+        time = what_is_the_time_now();
+        // do detect in an image file
+        detections = test_detector(filename1, thresh, hier_thresh, &num_output_class);
+        printf("Predicted in %f seconds.\n", what_is_the_time_now() - time);
+        printf("num_output_class:%d\n", num_output_class);
+        for(int i = 0; i < num_output_class; i++)
+        {
+            printf("%.0f: %.0f%%", detections[i*6+0],	detections[i*6+1] * 100);
+            printf("\t(left_x: %4.0f   top_y: %4.0f   width: %4.0f   height: %4.0f)\n",
+                detections[i*6+2], detections[i*6+3], detections[i*6+4], detections[i*6+5]);
+        }
     }
+
 #else
 
     bool is_show_frame = true;
     bool is_show_detections = true;
-    bool is_detect_in_thread = false;
+    bool is_detect_in_thread = true;
     bool is_print_bboxes_info = false;
 
-    VideoCapture cap(1);
-    bool isOpen = true;  
+    VideoCapture cap(1);// set your camera index
+    bool isCameraOpened = true;  
     if(!cap.isOpened())  
-        isOpen = false;
-    if(!isOpen)
+        isCameraOpened = false;
+    if(!isCameraOpened)
     {
-    printf("No camera found \n");
-    return -1;
+        printf("No camera found \n");
+        return -1;
     }
     Mat frame; 
     detections = (float*)calloc(255*6, sizeof(float));
-    time_t t0, t1;
-    t0 = -1;
+    double time = -1;
     Rect detections_rect;
     bool stop = false;  
     while(!stop)  
     {
-        if(isOpen)
+        if(isCameraOpened)
         {
             cap >> frame;
             // ====== detect objects ======
             if(!is_detect_in_thread)
-                detect_in_thread(frame, detections, &num_output_class, &time_consumed, thresh, hier_thresh);
+                detect_mat(frame, detections, &num_output_class, &time_consumed, thresh, hier_thresh);
             else
             {
-                t1 = time(NULL);
-                if((t1 - t0 ) > detect_interval || !(t0 > 0))
+                // do detect in a background thread which detached from camera thread with an self-adaptive time interval
+                if((what_is_the_time_now() - time ) > detect_interval || !(time > 0))
                 {
+                    time = what_is_the_time_now();
                     printf("begin detect, detect_interval is:%f \n", detect_interval);
-                    t0 = time(NULL);
-                    thread t(detect_in_thread, frame, detections, &num_output_class, &time_consumed, thresh, hier_thresh);
+                    thread t(detect_mat, frame, detections, &num_output_class, &time_consumed, thresh, hier_thresh);
                     t.detach();
-                    if(((time_consumed - detect_interval) > 0.2 || (time_consumed - detect_interval) < -0.3) 
-                    && time_consumed >0)
+                    // adjust the time interval
+                    if(((time_consumed - detect_interval) > 0.05 || (time_consumed - detect_interval) < -1) 
+                        && time_consumed >0)
                     {
                         detect_interval = time_consumed;
                         printf("detect_interval modified to: %f \n", detect_interval);

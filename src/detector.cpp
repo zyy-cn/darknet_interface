@@ -58,20 +58,21 @@ void detector_uninit()
     free_network(net);
 }
 
-float* detect(image im, float thresh, float hier_thresh, int* num_output_class, double* time_comsumed)
+double what_is_the_time_now()
+{
+    return what_time_is_it_now();
+}
+
+float* detect(image im, float thresh, float hier_thresh, int* num_output_class)
 {
     float nms=.45;	// 0.4F
-    double time;
     int letterbox = 0;
     image sized = letterbox_image(im, net.w, net.h); letterbox = 1;
     layer l = net.layers[net.n-1];
 
     float *X = sized.data;
-    time= what_time_is_it_now();
     network_predict(net, X);
     // printf("Predicted in %f seconds.\n", (what_time_is_it_now()-time));
-    if(time_comsumed)
-        *time_comsumed = (what_time_is_it_now()-time);
     int nboxes = 0;
     detection *dets = get_network_boxes(&net, im.w, im.h, thresh, hier_thresh, 0, 1, &nboxes, letterbox);
     if (nms) do_nms_sort(dets, nboxes, l.classes, nms);
@@ -104,7 +105,7 @@ float* detect(image im, float thresh, float hier_thresh, int* num_output_class, 
     return detections;
 }
 
-float* test_detector(char *filename, float thresh, float hier_thresh, int* num_output_class, double* time_comsumed)
+float* test_detector(char *filename, float thresh, float hier_thresh, int* num_output_class)
 {
     char buff[256];
     char *input = buff;
@@ -121,7 +122,7 @@ float* test_detector(char *filename, float thresh, float hier_thresh, int* num_o
         strtok(input, "\n");
     }
     image im = load_image(input,0,0,net.c);
-    return detect(im, thresh, hier_thresh, num_output_class, time_comsumed);
+    return detect(im, thresh, hier_thresh, num_output_class);
 }
 
 #ifdef OPENCV
@@ -153,9 +154,9 @@ image ipl_to_image(IplImage* src)
     return out;
 }
 
-float* test_detector_cv(IplImage* im, float thresh, float hier_thresh, int* num_output_class, double* time_comsumed)
+float* test_detector_cv(IplImage* im, float thresh, float hier_thresh, int* num_output_class)
 {
-    return detect(ipl_to_image(im), thresh, hier_thresh, num_output_class, time_comsumed);
+    return detect(ipl_to_image(im), thresh, hier_thresh, num_output_class);
 }
 #endif
 
