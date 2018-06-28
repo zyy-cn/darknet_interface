@@ -3,15 +3,15 @@
 #ifdef OPENCV
 #ifdef __cplusplus
 #include <opencv2/core/core.hpp>
-#ifdef GPU
-#include "cuda_runtime.h"
-#endif
 #else
 #include <opencv2/core/types_c.h>
 #endif
 #endif
 
 #ifdef __cplusplus
+#ifdef GPU
+#include "cuda_runtime.h"
+#endif
 extern "C" {
 #endif
 #include "parser.h"
