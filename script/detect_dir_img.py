@@ -12,11 +12,13 @@ def main(argv):
     else:
         # ====== init ======
         detector = cdll.LoadLibrary('../lib/libdetector_c.so')
+        detector.test_detector.restype = POINTER(c_float)
+        detector.what_is_the_time_now.restype = c_double
+        detector.say_hello()
         # cfgfile = "/home/m/Code/darknet_Alexey/cfg/yolov3.cfg"
         # weightfile = "/home/m/Code/darknet_Alexey/weights/yolov3.weights"
         cfgfile = argv[1]
         weightfile = argv[2]
-        detector.say_hello()
         detector.detector_init(cfgfile, weightfile)
 
         # ====== detect ======
@@ -28,11 +30,11 @@ def main(argv):
             # ====== load images from directory ======
             img_path = input_dir_name + '/' + filename
             img = cv2.imread(img_path)
-            num_output_class = pointer(c_int(0))
-            time_comsumed = pointer(c_double(0))
-            detector.test_detector.restype = POINTER(c_float)
             # ====== do detect ======
-            detections = detector.test_detector(img_path, c_float(0.5), c_float(0.9), num_output_class, time_comsumed)
+            num_output_class = pointer(c_int(0))
+            time = detector.what_is_the_time_now()
+            detections = detector.test_detector(img_path, c_float(0.5), c_float(0.9), num_output_class)
+            # ====== show detections ======
             for i in range(0, num_output_class[0]):
                 category = int(detections[i * 6 + 0])
                 confidence = float(detections[i * 6 + 1])
@@ -48,11 +50,11 @@ def main(argv):
                     cv2.rectangle(img, (int(x_lt), int(y_lt)), (int(x_lt) + int(width), int(y_lt ) + int(height)), (255, 0, 0), 2)
             print('detected image:  ' + filename)
             print('num_output_class:' + str(num_output_class[0]))
-            print('time_comsumed:   ' + str(time_comsumed[0]) + 's')
+            print('time_comsumed:   ' + str(detector.what_is_the_time_now() - time) + 's')
             print(' ')
             cv2.imshow("show", img)
             cv2.waitKey(1)
-            # ====== save image ======
+            # ====== save result image ======
             output_img = output_dir_name + '/' + filename
             cv2.imwrite(output_img, img)
 
