@@ -14,8 +14,8 @@ $ cd darknet
 ```
 Or you can choose Alexey version:
 ```
-$ git clone https://github.com/AlexeyAB/darknet.git **darknet_Alexey**
-$ cd **darknet_Alexey**
+$ git clone https://github.com/AlexeyAB/darknet.git darknet_Alexey
+$ cd darknet_Alexey
 ```
 modify those variants listed below:
 ```
@@ -28,6 +28,7 @@ $ vim Makefile
 and then:
 ```
 $ make -j4
+$ cd ..
 ```
 after do this you can find "libdarknet.so" in darknet repository folder.If the name of this shared library is "darknet.so", you should change it to "libdarknet.so" manually:
 ```
@@ -43,13 +44,13 @@ $ cd darknet_interface/src
 $ chmod 777 *
 $ vim gcc.sh
 ```
-**Modify those variants listed on the top of gcc.sh according to your own environment**, and then:
+Modify those variants **listed on the top of gcc.sh** according to your own environment, and then:
 ```
 $ ./gcc.sh
 $ cd ..
 ```
 after do this you can get "libdetector.so" and "libdetector_c.so" in darknet_interface/lib.   
-Note that your must compile and install OPENCV firstly if you want to use it. Furthermore, If you decide to use GPU and CUDNN on step 1, "IS_USE_GPU" and "IS_USE_CUDNN" must set to "1" correspondingly, and "0" if you don't.
+Note that your must compile and install OPENCV firstly if you want to use it. Furthermore, If you decide to use GPU and CUDNN on step 1, "IS_USE_GPU" and "IS_USE_CUDNN" must be set to "1" correspondingly, and "0" if you don't.
 
 #### step 3. Run demo
 you can run c++ demo by:
@@ -57,7 +58,7 @@ you can run c++ demo by:
 $ cd bin
 $ ./demo
 ```
-or you can run python demo by:
+or python demo:
 ```
 $ cd script
 $ python2 detect_dir_img.py ${cfg} ${weights} ${input directory} ${output directory}
@@ -66,3 +67,4 @@ $ python2 detect_dir_img.py ${cfg} ${weights} ${input directory} ${output direct
 ## TODO
 - [x] Add GPU support
 - [ ] Add GUI
+- [ ] Add demo gif
