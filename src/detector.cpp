@@ -1,6 +1,5 @@
 #include "detector.h"
 
-
 #ifdef OPENCV
 #ifdef __cplusplus
 #include <opencv2/core/core.hpp>
@@ -20,13 +19,15 @@ extern "C" {
 }
 #endif
 
-
 #include <stdio.h>
 
 static network *net;
 
 void detector_init(char *cfgfile, char *weightfile)
 {
+#ifdef GPU
+    cuda_set_device(0);
+#endif
     net = load_network(cfgfile, weightfile, 0);
     set_batch_network(net, 1);
     srand(2222222);
@@ -126,6 +127,40 @@ float* test_detector(char *filename, float thresh, float hier_thresh, int* num_o
 }
 
 
+#ifdef OPENCV
+void ipl_into_image(IplImage* src, image im)
+{
+    unsigned char *data = (unsigned char *)src->imageData;
+    int h = src->height;
+    int w = src->width;
+    int c = src->nChannels;
+    int step = src->widthStep;
+    int i, j, k;
+
+    for(i = 0; i < h; ++i){
+        for(k= 0; k < c; ++k){
+            for(j = 0; j < w; ++j){
+                im.data[k*w*h + i*w + j] = data[i*step + j*c + k]/255.;
+            }
+        }
+    }
+}
+
+image ipl_to_image(IplImage* src)
+{
+    int h = src->height;
+    int w = src->width;
+    int c = src->nChannels;
+    image out = make_image(w, h, c);
+    ipl_into_image(src, out);
+    return out;
+}
+
+float* test_detector_cv(IplImage* im, float thresh, float hier_thresh, int* num_output_class)
+{
+    return detect(ipl_to_image(im), thresh, hier_thresh, num_output_class);
+}
+#endif
 
 
 

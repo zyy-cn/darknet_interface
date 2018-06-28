@@ -2,15 +2,11 @@
 IS_USE_GPU=1
 IS_USE_CUDNN=1
 IS_USE_DARKNET_ALEXEYAB=0
-IS_USE_OPENCV=0
+IS_USE_OPENCV=1
 OPENCV_INCLUDE_PATH=/home/m/local_install/include
 OPENCV_LIB_PATH=/home/m/local_install/lib
 #OPENCV_INCLUDE_PATH=/usr/local/include
 #OPENCV_LIB_PATH=/usr/local/lib
-
-
-
-
 
 
 DETECTOR_BIN_PATH=../bin
