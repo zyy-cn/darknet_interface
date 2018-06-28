@@ -1,3 +1,6 @@
+// This header is used for both detector.cpp(the version of original darknet)
+// and detector_Alexey.cpp(the version of Alexey) 
+
 #ifdef OPENCV
 #ifdef __cplusplus
 #include <opencv2/core/core.hpp>

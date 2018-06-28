@@ -4,23 +4,26 @@ This repository is an INTERFACE for darknet, which allow you to use darknet dete
 
 ## How to use
 #### Step 1. Compile your darknet
-**Note that I use [This version of Darknet](https://github.com/AlexeyAB/darknet) forked by Alexey**, which I think is faster than the original one.
+**Note that this interface can be used both for the [original darknet](https://github.com/pjreddie/darknet) and [Alexey version](https://github.com/AlexeyAB/darknet)**, you can choose any one you like to compile.  
+Btw, I perfer to use Alexey version because I think its faster than the original one, especially in Raspberry PI.  
+
+If you choose to use the original darknet:
 ```
-$ git clone https://github.com/AlexeyAB/darknet darknet_Alexey
-$ cd darknet_Alexey
+$ git clone https://github.com/pjreddie/darknet.git darknet
+$ cd darknet
+```
+Or you can choose Alexey version:
+```
+$ git clone https://github.com/AlexeyAB/darknet.git **darknet_Alexey**
+$ cd **darknet_Alexey**
+```
+modify those variants listed below:
+```
 $ vim Makefile
-```
-modify the value of "LIBSO" from "0" to "1":
-```
-LIBSO=1
-```
-if you have GPU on your device and you'd like to use it, you should turn it on by doing this:
-```
-GPU=1
-```
-furthermore, if CUDNN library is avaliable, you should turn it on by doing this:
-```
-CUDNN=1
+    GPU=1           (optional)
+    CUDNN=1         (optional)
+    CUDNN_HALF=1    (optional, Alexey version only)
+    LIBSO=1         (Alexey version only)
 ```
 and then:
 ```
@@ -33,22 +36,33 @@ or
 $ ln -s darknet.so libdarknet.so
 ```
 
-#### Step 2. Clone this repository beside the darknet you just cloned
+#### Step 2. Clone and compile this repository beside the darknet repository you just cloned
 ```
 $ git clone https://github.com/zyy-cn/darknet_interface.git darknet_interface
 $ cd darknet_interface/src
 $ chmod 777 *
+$ vim gcc.sh
+```
+**Modify those variants listed on the top of gcc.sh according to your own environment**, and then:
+```
 $ ./gcc.sh
 $ cd ..
 ```
-after do this you can get "libdetector.so" in darknet_interface/lib. Note that your must compile and install OPENCV firstly and set $OPENCV_INCLUDE_PATH and $OPENCV_LIB_PATH variants in "gcc.sh" currectly if you want to use it.   
-If you decide to use your GPU and CUDNN on step 1, "IS_USE_GPU" and "IS_USE_CUDNN" should be set to "1" correspondingly, and "0" if not.
+after do this you can get "libdetector.so" and "libdetector_c.so" in darknet_interface/lib.   
+Note that your must compile and install OPENCV firstly if you want to use it. Furthermore, If you decide to use GPU and CUDNN on step 1, "IS_USE_GPU" and "IS_USE_CUDNN" must set to "1" correspondingly, and "0" if you don't.
 
 #### step 3. Run demo
+you can run c++ demo by:
 ```
 $ cd bin
-$ ./darknet_detector_test
+$ ./demo
+```
+or you can run python demo by:
+```
+$ cd script
+$ python2 detect_dir_img.py ${cfg} ${weights} ${input directory} ${output directory}
 ```
 
 ## TODO
 - [x] Add GPU support
+- [ ] Add GUI

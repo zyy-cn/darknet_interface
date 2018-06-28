@@ -1,3 +1,6 @@
+// This interface for the version of darknet forked by Alexey
+// github:https://github.com/AlexeyAB/darknet
+
 #include "detector.h"
 
 #ifdef OPENCV
@@ -14,8 +17,8 @@
 #endif
 extern "C" {
 #endif
-#include "parser.h"
 #include "utils.h"
+#include "parser.h"
 #ifdef __cplusplus
 }
 #endif

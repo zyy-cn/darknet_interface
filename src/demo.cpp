@@ -67,7 +67,8 @@ int main()
     detector_init(cfgfile, weightfile);
 
 #ifndef OPENCV
-    char *filename1 = "../../darknet_Alexey/data/person.jpg";
+    //char *filename1 = "../../darknet_Alexey/data/person.jpg";
+    char *filename1;
     double time;
     for(int i = 0; i < 10; i++)
     {

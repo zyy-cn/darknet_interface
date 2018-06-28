@@ -1,3 +1,6 @@
+// This interface for the original darknet
+// github:https://github.com/pjreddie/darknet
+
 #include "detector.h"
 
 #ifdef OPENCV
@@ -18,8 +21,6 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-
-#include <stdio.h>
 
 static network *net;
 
@@ -87,7 +88,6 @@ float* select_detections(image im, detection *dets, int num, float thresh , int 
 float* detect(image im, float thresh, float hier_thresh, int* result_num)
 {
     float nms=.45;
-    //image im = load_image_color(filename,0,0);
     image sized = letterbox_image(im, net->w, net->h);
 
     layer l = net->layers[net->n-1];
