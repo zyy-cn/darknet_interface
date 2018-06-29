@@ -15,7 +15,7 @@ OPENCV_LIB_PATH=/home/m/local_install/lib
 
 
 
-# ====== compile libraries and demo automaticly and do not make any change ======
+# ====== compile libraries and demo program automaticly and DO NOT make any change if not necessary ======
 DETECTOR_BIN_PATH=../bin
 DETECTOR_LIB_PATH=../lib
 if [ $IS_USE_DARKNET_ALEXEYAB == 1 ];then
@@ -45,9 +45,12 @@ rm $DETECTOR_BIN_PATH/libdarknet.so
 rm $DETECTOR_BIN_PATH/libdetector.so
 ln -s detector$DARKNET_SUFFIX.cpp detector.c
 
+# compile shared libraries
 g++ -fPIC -shared -O3 -o $DETECTOR_LIB_PATH/libdetector.so detector$DARKNET_SUFFIX.cpp -I. -I$DARKNET_INCLUDE_PATH -I$DARKNET_SRC_PATH -I$OPENCV_INCLUDE_PATH -I$CUDA_PATH/include -L$DARKNET_LIB_PATH -L$CUDA_PATH/lib64 -ldarknet -fopenmp -lgomp -DOPENBLAS $CFLAGS
 gcc -fPIC -shared -O3 -o $DETECTOR_LIB_PATH/libdetector_c.so detector.c -I. -I$DARKNET_INCLUDE_PATH -I$DARKNET_SRC_PATH -I$OPENCV_INCLUDE_PATH -I$CUDA_PATH/include -L$DARKNET_LIB_PATH -L$CUDA_PATH/lib64 -ldarknet -fopenmp -lgomp -DOPENBLAS $CFLAGS
-g++ -std=c++11 -O3  -o $DETECTOR_BIN_PATH/demo demo.cpp -I. -I$OPENCV_INCLUDE_PATH -L$OPENCV_LIB_PATH -L$DARKNET_LIB_PATH -L$DETECTOR_LIB_PATH -ldetector -lopencv_core -lopencv_imgproc -lopencv_highgui -lopencv_videoio -fopenmp -pthread -lgomp -ldarknet $CFLAGS
+
+# compile demo
+g++ -std=c++11 -O3  -o $DETECTOR_BIN_PATH/demo demo.cpp -I. -I$OPENCV_INCLUDE_PATH -L$OPENCV_LIB_PATH -L$DARKNET_LIB_PATH -L$DETECTOR_LIB_PATH -ldetector -lopencv_core -lopencv_imgproc -lopencv_highgui -lopencv_videoio -fopenmp -pthread -lgomp -ldarknet -DOPENCV
 
 rm detector.c
 ln -s $DARKNET_LIB_PATH/libdarknet.so $DETECTOR_BIN_PATH/libdarknet.so

@@ -50,7 +50,7 @@ $ ./gcc.sh
 $ cd ..
 ```
 after do this you can get "libdetector.so" and "libdetector_c.so" in darknet_interface/lib.   
-Note that your must compile and install OPENCV firstly if you want to use it. Furthermore, If you decide to use GPU and CUDNN on step 1, "IS_USE_GPU" and "IS_USE_CUDNN" must be set to "1" correspondingly, and "0" if you don't.
+Note that your must compile and install OPENCV firstly if you want to use it, and **macro definition "-DOPENCV" should be added** when those two shared libraries compiled by set "IS_USE_OPENCV" to "1" in gcc.sh. If you decide to use GPU and CUDNN on step 1, **don't forget to add "-DGPU" and "-DCUDNN" correspondly** by set "IS_USE_GPU" and "IS_USE_CUDNN" to "1", And "0" if you don't mean to.
 
 #### step 3. Run demo
 you can run c++ demo by:
