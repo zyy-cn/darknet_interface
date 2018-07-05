@@ -66,7 +66,7 @@ float* select_detections(image im, detection *dets, int num, float thresh , int 
 	            if(y1 < 0) y1 = 0;
             
                 //printf("%d: %.0f%%\n",j, dets[i].prob[j]*100);		
-			    result[k*6+0]=(float)j;result[k*6+1]=dets[i].prob[j]*100;
+			    result[k*6+0]=(float)j;result[k*6+1]=dets[i].prob[j];
 			    result[k*6+2]=x1;result[k*6+3]=y1;
 			    result[k*6+4]=w1;result[k*6+5]=h1;
 			    ++k;
