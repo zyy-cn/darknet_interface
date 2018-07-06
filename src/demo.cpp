@@ -54,7 +54,7 @@ int main()
         cfgfile = "../../darknet_Alexey/cfg/yolov3.cfg";
         weightfile = "../../darknet_Alexey/weights/yolov3.weights";
         thresh = 0.5;
-        hier_thresh = 0.9;
+        hier_thresh = 0.5;
     }
     else if(model_select == 1)
     {

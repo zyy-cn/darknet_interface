@@ -1,6 +1,6 @@
 # ====== set your variants here firstly ======
 
-IS_USE_DARKNET_ALEXEYAB=0 # '0' for the original darknet and '1' for the Alexey version
+IS_USE_DARKNET_ALEXEYAB=1 # '0' for the original darknet and '1' for the Alexey version
 
 IS_USE_GPU=1
 IS_USE_CUDNN=1
@@ -50,7 +50,7 @@ g++ -fPIC -shared -O3 -o $DETECTOR_LIB_PATH/libdetector.so detector$DARKNET_SUFF
 gcc -fPIC -shared -O3 -o $DETECTOR_LIB_PATH/libdetector_c.so detector.c -I. -I$DARKNET_INCLUDE_PATH -I$DARKNET_SRC_PATH -I$OPENCV_INCLUDE_PATH -I$CUDA_PATH/include -L$DARKNET_LIB_PATH -L$CUDA_PATH/lib64 -ldarknet -fopenmp -lgomp -DOPENBLAS $CFLAGS
 
 # compile demo
-g++ -std=c++11 -O3  -o $DETECTOR_BIN_PATH/demo demo.cpp -I. -I$OPENCV_INCLUDE_PATH -L$OPENCV_LIB_PATH -L$DARKNET_LIB_PATH -L$DETECTOR_LIB_PATH -ldetector -lopencv_core -lopencv_imgproc -lopencv_highgui -lopencv_videoio -fopenmp -pthread -lgomp -ldarknet -DOPENCV
+g++ -std=c++11 -O3  -o $DETECTOR_BIN_PATH/demo demo.cpp -I. -I$OPENCV_INCLUDE_PATH -L$OPENCV_LIB_PATH -L$DARKNET_LIB_PATH -L$DETECTOR_LIB_PATH -ldetector -lopencv_core -lopencv_imgproc -lopencv_highgui -lopencv_videoio -fopenmp -pthread -lgomp -ldarknet $CFLAGS
 
 rm detector.c
 ln -s $DARKNET_LIB_PATH/libdarknet.so $DETECTOR_BIN_PATH/libdarknet.so
