@@ -14,7 +14,7 @@ def main(argv):
         detector = cdll.LoadLibrary('../lib/libdetector_c.so')
         detector.test_detector.restype = POINTER(c_float)
         detector.what_is_the_time_now.restype = c_double
-        detector.say_hello()
+        # detector.say_hello()
         # cfgfile = "/home/m/Code/darknet_Alexey/cfg/yolov3.cfg"
         # weightfile = "/home/m/Code/darknet_Alexey/weights/yolov3.weights"
         cfgfile = argv[1]
@@ -42,12 +42,13 @@ def main(argv):
                 y_lt = int(detections[i * 6 + 3])
                 width = int(detections[i * 6 + 4])
                 height = int(detections[i * 6 + 5])
-                if detections[i * 6 + 0] == 0:
+                if detections[i * 6 + 0] != -1:
                     print('--' + str(i) + 'th detection--')
                     print('  category:  ' + str(category))
                     print('  confidence:' + str(confidence * 100) + '%')
                     print('  x_lt:' + str(x_lt) + '  y_lt:' + str(y_lt) + '  width:' + str(width) + '  height:' + str(height))
                     cv2.rectangle(img, (int(x_lt), int(y_lt)), (int(x_lt) + int(width), int(y_lt ) + int(height)), (255, 0, 0), 2)
+                    cv2.putText(img,'category:'+str(category)+',  confidence:'+str(confidence*100)+'%',(x_lt,y_lt-10),cv2.FONT_HERSHEY_SIMPLEX,1,(255,0,0),4,8)
             print('detected image:  ' + filename)
             print('num_output_class:' + str(num_output_class[0]))
             print('time_comsumed:   ' + str(detector.what_is_the_time_now() - time) + 's')

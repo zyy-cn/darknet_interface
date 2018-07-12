@@ -7,8 +7,8 @@ IS_USE_CUDNN=1
 CUDA_PATH=/usr/local/cuda # cudnn's header and libs should be found in $CUDA_PATH/include and $CUDA_PATH/lib64 correspondly
 
 IS_USE_OPENCV=1
-OPENCV_INCLUDE_PATH=/home/m/local_install/include
-OPENCV_LIB_PATH=/home/m/local_install/lib
+OPENCV_INCLUDE_PATH=/home/zyy/local_install/include
+OPENCV_LIB_PATH=/home/zyy/local_install/lib
 #OPENCV_INCLUDE_PATH=/usr/local/include
 #OPENCV_LIB_PATH=/usr/local/lib
 
