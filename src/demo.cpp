@@ -2,7 +2,6 @@
 
 #include <stdio.h>
 #include <stdlib.h> 
-#include <time.h> 
 
 #ifdef OPENCV
 #include "opencv2/core/types_c.h"
@@ -88,7 +87,7 @@ int main()
 #else
     bool is_show_frame = true;
     bool is_show_detections = true;
-    bool is_detect_in_thread = true;
+    bool is_detect_in_thread = false;
     // ====== init camera ======
     VideoCapture cap(1);// set your camera index
     bool isCameraOpened = true;  
@@ -99,7 +98,7 @@ int main()
         printf("No camera found \n");
         return -1;
     }
-    Mat frame; 
+    Mat frame;
     detections = (float*)calloc(255*6, sizeof(float));
     Rect detections_rect;
     bool stop = false;  
@@ -110,7 +109,10 @@ int main()
             cap >> frame;
             // ====== detect objects ======
             if(!is_detect_in_thread)
+            {
                 detect_mat(frame, detections, &num_output_class, &time_consumed, thresh, hier_thresh);
+                printf("time_consumed: %f \n", (float)time_consumed);
+            }
             else
             {
                 // do detect in a background thread
@@ -136,14 +138,14 @@ int main()
                         detections_rect.height = detections[i*6+5];
                         if(detections[i*6+0] == 0) // person
                             rectangle(frame, detections_rect, CV_RGB(255, 0, 0), 4, 8, 0);
-                        else if(detections[i*6+0] == 63) // tvmonitor
+                        else if(detections[i*6+0] == 62 || detections[i*6+0] == 63) // tvmonitor && laptop
                             rectangle(frame, detections_rect, CV_RGB(0, 0, 255), 4, 8, 0);
-                        else if(detections[i*6+0] == 28)// chair
+                        else if(detections[i*6+0] == 28 || detections[i*6+0] == 56)//  suitcase && chair
                             rectangle(frame, detections_rect, CV_RGB(0, 255, 0), 4, 8, 0);
-                        else if(detections[i*6+0] == 56)
-                            rectangle(frame, detections_rect, CV_RGB(255, 255, 0), 4, 8, 0);
                         else
                             rectangle(frame, detections_rect, CV_RGB(0, 0, 0), 4, 8, 0);
+                        String info = "cls:"+ to_string(int(detections[i*6+0])) +", conf:"+ to_string(int(detections[i*6+1]*100)) +"%";
+                        putText(frame, info, Point(detections_rect.x, detections_rect.y-10), FONT_HERSHEY_SIMPLEX, 1, (255,0,0), 4, 8);
                     }
                 }
 

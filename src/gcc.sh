@@ -1,6 +1,6 @@
 # ====== set your variants here firstly ======
 
-IS_USE_DARKNET_ALEXEYAB=0 # '0' for the original darknet and '1' for the Alexey version
+IS_USE_DARKNET_ALEXEYAB=1 # '0' for the original darknet and '1' for the Alexey version
 
 IS_USE_GPU=1
 IS_USE_CUDNN=1
