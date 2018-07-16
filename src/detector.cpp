@@ -3,14 +3,6 @@
 
 #include "detector.h"
 
-#ifdef OPENCV
-#ifdef __cplusplus
-#include <opencv2/core/core.hpp>
-#else
-#include <opencv2/core/types_c.h>
-#endif
-#endif
-
 #ifdef __cplusplus
 #ifdef GPU
 #include "cuda_runtime.h"
