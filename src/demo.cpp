@@ -87,7 +87,7 @@ int main()
 #else
     bool is_show_frame = true;
     bool is_show_detections = true;
-    bool is_detect_in_thread = false;
+    bool is_detect_in_thread = true;
     // ====== init camera ======
     VideoCapture cap(1);// set your camera index
     bool isCameraOpened = true;  
