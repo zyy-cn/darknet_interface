@@ -40,7 +40,7 @@ void detect_mat(Mat frame_detect, float* detections_output, int* num_output_clas
 
 int main()
 {
-    int model_select = 1; // model 0 for the original yolov3 model and 1 for its tiny counterpart 
+    int model_select = 0; // model 0 for the original yolov3 model and 1 for its tiny counterpart 
     char  *cfgfile;
     char *weightfile;
     double time_consumed = 0;
