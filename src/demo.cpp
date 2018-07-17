@@ -145,14 +145,14 @@ int main()
                         else
                             rectangle(frame, detections_rect, CV_RGB(0, 0, 0), 4, 8, 0);
                         String info = "cls:"+ to_string(int(detections[i*6+0])) +", conf:"+ to_string(int(detections[i*6+1]*100)) +"%";
-                        putText(frame, info, Point(detections_rect.x, detections_rect.y-10), FONT_HERSHEY_SIMPLEX, 1, (255,0,0), 4, 8);
+                        putText(frame, info, Point(detections_rect.x, detections_rect.y-10), FONT_HERSHEY_SIMPLEX, 1, Scalar(0,255,0), 2, 8);
                     }
                 }
 
                 namedWindow("detections", cv::WINDOW_AUTOSIZE);
                 imshow("detections", frame);
-                if(waitKey(30) >=0)  
-                    stop = true;  
+                if(waitKey(30) >=0)
+                    stop = true;
             }
         }
     }  
