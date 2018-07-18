@@ -70,3 +70,6 @@ $ python2 detect_dir_img.py ${cfg} ${weights} ${input directory} ${output direct
 - [x] Add GPU support
 - [ ] Add GUI
 - [ ] Add demo gif
+
+## License
+This project is released under the [WTFPL LICENSE](http://www.wtfpl.net/).
