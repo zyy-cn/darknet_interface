@@ -1,4 +1,4 @@
-// This interface for the version of darknet forked by Alexey
+// This interface for the version of darknet forked by AlexeyAB
 // github:https://github.com/AlexeyAB/darknet
 
 #include "detector.h"

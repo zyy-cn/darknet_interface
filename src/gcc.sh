@@ -1,6 +1,6 @@
 # ====== set your variants here firstly ======
 
-IS_USE_DARKNET_ALEXEYAB=1 # '0' for the original darknet and '1' for the Alexey version
+IS_USE_DARKNET_ALEXEYAB=1 # '0' for the original darknet and '1' for the AlexeyAB version
 
 IS_USE_GPU=1
 IS_USE_CUDNN=1
@@ -19,7 +19,7 @@ OPENCV_LIB_PATH=/home/m/local_install/lib
 DETECTOR_BIN_PATH=../bin
 DETECTOR_LIB_PATH=../lib
 if [ $IS_USE_DARKNET_ALEXEYAB == 1 ];then
-    DARKNET_SUFFIX=_Alexey
+    DARKNET_SUFFIX=_AlexeyAB
 fi
 DARKNET_SRC_PATH=../../darknet$DARKNET_SUFFIX/src
 DARKNET_LIB_PATH=../../darknet$DARKNET_SUFFIX

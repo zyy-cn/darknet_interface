@@ -4,26 +4,26 @@
 
 ## How to use
 #### Step 1. Compile your darknet
-**Note that this interface can be used both for the [original darknet](https://github.com/pjreddie/darknet) and [Alexey version](https://github.com/AlexeyAB/darknet)**, you can choose any one you like to compile.  
-Btw, I perfer to use Alexey version because I think its faster than the original one, especially in Raspberry PI.  
+**Note that this interface can be used both for the [original darknet](https://github.com/pjreddie/darknet) and [AlexeyAB version](https://github.com/AlexeyAB/darknet)**, you can choose any one you like to compile.  
+Btw, I perfer to use AlexeyAB version because I think its faster than the original one, especially in Raspberry PI.  
 
 If you choose to use the original darknet:
 ```
 $ git clone https://github.com/pjreddie/darknet.git darknet
 $ cd darknet
 ```
-Or you can choose Alexey version:
+Or you can choose AlexeyAB version:
 ```
-$ git clone https://github.com/AlexeyAB/darknet.git darknet_Alexey
-$ cd darknet_Alexey
+$ git clone https://github.com/AlexeyAB/darknet.git darknet_AlexeyAB
+$ cd darknet_AlexeyAB
 ```
 modify those variants listed below:
 ```
 $ vim Makefile
     GPU=1           (optional)
     CUDNN=1         (optional)
-    CUDNN_HALF=1    (optional, Alexey version only)
-    LIBSO=1         (Alexey version only)
+    CUDNN_HALF=1    (optional, AlexeyAB version only)
+    LIBSO=1         (AlexeyAB version only)
 ```
 and then:
 ```

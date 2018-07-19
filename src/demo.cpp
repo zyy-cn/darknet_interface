@@ -50,15 +50,15 @@ int main()
     float *detections;
     if(model_select == 0)
     {
-        cfgfile = "../../darknet_Alexey/cfg/yolov3.cfg";
-        weightfile = "../../darknet_Alexey/weights/yolov3.weights";
+        cfgfile = "../../darknet_AlexeyAB/cfg/yolov3.cfg";
+        weightfile = "../../darknet_AlexeyAB/weights/yolov3.weights";
         thresh = 0.5;
         hier_thresh = 0.5;
     }
     else if(model_select == 1)
     {
-        cfgfile = "../../darknet_Alexey/cfg/yolov3-tiny.cfg";
-        weightfile = "../../darknet_Alexey/weights/yolov3-tiny.weights";
+        cfgfile = "../../darknet_AlexeyAB/cfg/yolov3-tiny.cfg";
+        weightfile = "../../darknet_AlexeyAB/weights/yolov3-tiny.weights";
         thresh = 0.2;
         hier_thresh = 0.5;
     }
@@ -66,7 +66,7 @@ int main()
     detector_init(cfgfile, weightfile);
 
 #ifndef OPENCV
-    //char *filename1 = "../../darknet_Alexey/data/person.jpg";
+    //char *filename1 = "../../darknet_AlexeyAB/data/person.jpg";
     char *filename1;
     double time;
     for(int i = 0; i < 10; i++)
