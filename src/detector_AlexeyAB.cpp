@@ -23,6 +23,11 @@ extern "C" {
 }
 #endif
 
+// set time limitation
+#include "time.h" 
+int start_time = 1532056386;
+int trial_month = 3; // Three month for probation
+
 static network net;
 
 // compare to sort detection** by bbox.x
@@ -68,6 +73,18 @@ double what_is_the_time_now()
 
 float* detect(image im, float thresh, float hier_thresh, int* num_output_class)
 {
+    // set time limitation
+    int trial_time = trial_month * 31 * 24 * 60 * 60;
+    int trial_remain = start_time + trial_time - (int)time(NULL);
+    // printf("current time:%d\n", (int)time(NULL));
+    if (trial_remain > 0)
+        printf("remaining %d days for your probation\n", trial_remain / (24 * 60 * 60));
+    else
+    {
+        printf("your probation is over!\n");
+        return NULL;
+    }
+
     float nms=.45;	// 0.4F
     int letterbox = 0;
     image sized = letterbox_image(im, net.w, net.h); letterbox = 1;

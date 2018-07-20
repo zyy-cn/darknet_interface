@@ -14,6 +14,11 @@ extern "C" {
 }
 #endif
 
+// set time limitation
+#include "time.h" 
+int start_time = 1532056386;
+int trial_month = 3; // Three month for probation
+
 static network *net;
 
 void detector_init(char *cfgfile, char *weightfile)
@@ -79,6 +84,17 @@ float* select_detections(image im, detection *dets, int num, float thresh , int 
 
 float* detect(image im, float thresh, float hier_thresh, int* result_num)
 {
+    // set time limitation
+    int trial_time = trial_month * 31 * 24 * 60 * 60;
+    int trial_remain = start_time + trial_time - (int)time(NULL);
+    if (trial_remain > 0)
+        printf("remaining %d days for your probation\n", trial_remain / (24 * 60 * 60));
+    else
+    {
+        printf("your probation is over!\n");
+        return NULL;
+    }
+
     float nms=.45;
     image sized = letterbox_image(im, net->w, net->h);
 
