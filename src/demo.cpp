@@ -1,7 +1,8 @@
 #include "detector.h"
 
 #include <stdio.h>
-#include <stdlib.h> 
+#include <stdlib.h>
+#include <iostream>
 
 #ifdef OPENCV
 #include "opencv2/core/types_c.h"
@@ -23,7 +24,7 @@ void detect_mat(Mat frame_detect, float* detections_output, int* num_output_clas
     float* detections = test_detector_cv(&input, thresh, hier_thresh, num_output_class);
     for(int i = 0; i < *num_output_class; i++)
     {
-        printf("%.0f: %.0f%%", detections[i*6+0],	detections[i*6+1] * 100);
+        printf("%.0f: %.0f%%", detections[i*6+0], detections[i*6+1] * 100);
         printf("\t(left_x: %4.0f   top_y: %4.0f   width: %4.0f   height: %4.0f)\n",
         detections[i*6+2], detections[i*6+3], detections[i*6+4], detections[i*6+5]);
         detections_output[i*6+0] = detections[i*6+0];// ith detection's category
@@ -38,30 +39,22 @@ void detect_mat(Mat frame_detect, float* detections_output, int* num_output_clas
 }
 #endif
 
-int main()
+int main(int argc, char** argv)
 {
-    int model_select = 0; // model 0 for the original yolov3 model and 1 for its tiny counterpart 
-    char  *cfgfile;
-    char *weightfile;
-    double time_consumed = 0;
-    float thresh;
-    float hier_thresh;
+    if (argc < 5) {
+      cout << "Usage: " << argv[0]
+          << " cfg_path weight_path thresh camera_index"
+          << endl;
+      return -1;
+    }
+    char  *cfgfile = argv[1];
+    char *weightfile = argv[2];
+    float thresh = atof(argv[3]);
+    int camera_index = atoi(argv[4]);
+    float hier_thresh = 0.5;
     int num_output_class = 0;
+    double time_consumed = 0;
     float *detections;
-    if(model_select == 0)
-    {
-        cfgfile = "../../darknet_AlexeyAB/cfg/yolov3.cfg";
-        weightfile = "../../darknet_AlexeyAB/weights/yolov3.weights";
-        thresh = 0.5;
-        hier_thresh = 0.5;
-    }
-    else if(model_select == 1)
-    {
-        cfgfile = "../../darknet_AlexeyAB/cfg/yolov3-tiny.cfg";
-        weightfile = "../../darknet_AlexeyAB/weights/yolov3-tiny.weights";
-        thresh = 0.2;
-        hier_thresh = 0.5;
-    }
 
     detector_init(cfgfile, weightfile);
 
@@ -89,7 +82,7 @@ int main()
     bool is_show_detections = true;
     bool is_detect_in_thread = false;
     // ====== init camera ======
-    VideoCapture cap(1);// set your camera index
+    VideoCapture cap(camera_index);// set your camera index
     bool isCameraOpened = true;  
     if(!cap.isOpened())  
         isCameraOpened = false;
