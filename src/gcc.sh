@@ -44,16 +44,16 @@ else
 fi
 rm $DETECTOR_LIB_PATH/libdetector.so
 rm $DETECTOR_LIB_PATH/libdetector_c.so
-rm $DETECTOR_LIB_PATH/libdarknet.so
-ln -s $DARKNET_LIB_PATH/libdarknet.so $DETECTOR_LIB_PATH/libdarknet.so
+rm $DETECTOR_LIB_PATH/libnet.so
+cp $DARKNET_LIB_PATH/libdarknet.so $DETECTOR_LIB_PATH/libnet.so
 
 ln -s detector$DARKNET_SUFFIX.cpp detector.c
 
 # compile shared libraries
-g++ -fPIC -shared -O3 -o $DETECTOR_LIB_PATH/libdetector.so detector$DARKNET_SUFFIX.cpp -I. -I$DARKNET_INCLUDE_PATH -I$DARKNET_SRC_PATH -I$CUDA_PATH/include -L$DARKNET_LIB_PATH -L$CUDA_PATH/lib64 -ldarknet -fopenmp -lgomp $CFLAGS $OPENCV
-gcc -fPIC -shared -O3 -o $DETECTOR_LIB_PATH/libdetector_c.so detector.c -I. -I$DARKNET_INCLUDE_PATH -I$DARKNET_SRC_PATH -I$CUDA_PATH/include -L$DARKNET_LIB_PATH -L$CUDA_PATH/lib64 -ldarknet -fopenmp -lgomp $CFLAGS $OPENCV
+g++ -fPIC -shared -O3 -o $DETECTOR_LIB_PATH/libdetector.so detector$DARKNET_SUFFIX.cpp -I. -I$DARKNET_INCLUDE_PATH -I$DARKNET_SRC_PATH -I$CUDA_PATH/include -L$DETECTOR_LIB_PATH -L$CUDA_PATH/lib64 -lnet -fopenmp -lgomp $CFLAGS $OPENCV
+gcc -fPIC -shared -O3 -o $DETECTOR_LIB_PATH/libdetector_c.so detector.c -I. -I$DARKNET_INCLUDE_PATH -I$DARKNET_SRC_PATH -I$CUDA_PATH/include -L$DETECTOR_LIB_PATH -L$CUDA_PATH/lib64 -lnet -fopenmp -lgomp $CFLAGS $OPENCV
 
 # compile demo
-g++ -std=c++11 -O3  -o $DETECTOR_BIN_PATH/demo demo.cpp -I. -L$DARKNET_LIB_PATH -L$DETECTOR_LIB_PATH -ldetector -fopenmp -pthread -lgomp -ldarknet $OPENCV $CFLAGS
+g++ -std=c++11 -O3  -o $DETECTOR_BIN_PATH/demo demo.cpp -I. -L$DETECTOR_LIB_PATH -L$DETECTOR_LIB_PATH -ldetector -fopenmp -pthread -lgomp -lnet $OPENCV $CFLAGS
 
 rm detector.c
