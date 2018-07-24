@@ -57,7 +57,8 @@ you can run c++ demo by:
 ```
 $ cd bin
 $ export LD_LIBRARY_PATH=../lib:$LD_LIBRARY_PATH
-$ ./demo ${cfg} ${weights} ${thresh} ${camera_index}
+$ ./demo ${detect_type} ${cfg} ${weights} ${thresh} ${image_path|video_path|webcam_index}
+in which ${detect_type} can be 'image', 'video' or 'webcam'
 ```
 or python demo:
 ```
