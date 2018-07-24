@@ -57,7 +57,7 @@ you can run c++ demo by:
 ```
 $ cd bin
 $ export LD_LIBRARY_PATH=../lib:$LD_LIBRARY_PATH
-$ ./demo
+$ ./demo ${cfg} ${weights} ${thresh} ${camera_index}
 ```
 or python demo:
 ```
