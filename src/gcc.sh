@@ -45,7 +45,6 @@ fi
 rm $DETECTOR_LIB_PATH/libdetector.so
 rm $DETECTOR_LIB_PATH/libdetector_c.so
 rm $DETECTOR_LIB_PATH/libnet.so
-rm ../include/detector.h
 cp $DARKNET_LIB_PATH/libdarknet.so $DETECTOR_LIB_PATH/libnet.so
 cp ./detector.h ../include/detector.h
 
