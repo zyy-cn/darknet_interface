@@ -14,8 +14,6 @@ def main(argv):
         detector = cdll.LoadLibrary('../lib/libdetector_c.so')
         detector.test_detector.restype = POINTER(c_float)
         detector.what_is_the_time_now.restype = c_double
-        # cfgfile = "/home/m/Code/darknet_AlexeyAB/cfg/yolov3.cfg"
-        # weightfile = "/home/m/Code/darknet_AlexeyAB/weights/yolov3.weights"
         cfgfile = argv[1]
         weightfile = argv[2]
         detector.detector_init(cfgfile, weightfile)
