@@ -1,6 +1,6 @@
 # ====== set your variants here firstly ======
 
-IS_USE_DARKNET_ALEXEYAB=1 # '0' for the original darknet and '1' for the AlexeyAB version
+IS_USE_DARKNET_ALEXEYAB=0 # '0' for the original darknet and '1' for the AlexeyAB version
 
 IS_USE_GPU=1
 IS_USE_CUDNN=1
@@ -32,7 +32,7 @@ DARKNET_SRC_PATH=../../darknet$DARKNET_SUFFIX/src
 DARKNET_LIB_PATH=../../darknet$DARKNET_SUFFIX
 if [ $IS_USE_OPENCV == 1 ];then
     CFLAGS+=\ -DOPENCV
-    OPENCV+=-I$OPENCV_INCLUDE_PATH\ -L$OPENCV_LIB_PATH\ -lopencv_core\ -lopencv_imgproc\ -lopencv_highgui\ -lopencv_videoio
+    OPENCV+=-I$OPENCV_INCLUDE_PATH\ -L$OPENCV_LIB_PATH\ -lopencv_core\ -lopencv_imgproc\ -lopencv_highgui\ -lopencv_imgcodecs\ -lopencv_videoio
 fi
 if [ $IS_USE_GPU == 1 ];then
     CFLAGS+=\ -DGPU
