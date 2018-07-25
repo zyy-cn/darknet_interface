@@ -24,9 +24,9 @@ void detect_mat(Mat frame_detect, float* detections_output, int* num_output_clas
     float* detections = test_detector_cv(&input, thresh, hier_thresh, num_output_class);
     for(int i = 0; i < *num_output_class; i++)
     {
-        printf("%.0f: %.0f%%", detections[i*6+0], detections[i*6+1] * 100);
-        printf("\t(left_x: %4.0f   top_y: %4.0f   width: %4.0f   height: %4.0f)\n",
-        detections[i*6+2], detections[i*6+3], detections[i*6+4], detections[i*6+5]);
+        cout << (int)detections[i*6+0] << ": " << (int)(round(detections[i*6+1]*100)) 
+            << "%  \t(left_x: " << detections[i*6+2] << "\ttop_y: " << detections[i*6+3]
+            << "\twidth: " << detections[i*6+4] << "\theight: " << detections[i*6+5] << ")" << endl;
         detections_output[i*6+0] = detections[i*6+0];// ith detection's category
         detections_output[i*6+1] = detections[i*6+1];// ith detection's confidence score
         detections_output[i*6+2] = detections[i*6+2];// ith detection's top-left x-coordinate of bbox
@@ -112,13 +112,14 @@ int main(int argc, char** argv)
         {
             time = what_is_the_time_now();
             detections = test_detector(image_path, thresh, hier_thresh, &num_output_class);
-            printf("Predicted in %f seconds.\n", what_is_the_time_now() - time);
-            printf("num_output_class:%d\n", num_output_class);
+            cout << "Predicted in " << what_is_the_time_now() - time << " seconds." << endl;
+            cout << "num_output_class:" << num_output_class << endl;
             for(int i = 0; i < num_output_class; i++)
             {
-                printf("%.0f: %.0f%%", detections[i*6+0],	detections[i*6+1] * 100);
-                printf("\t(left_x: %4.0f   top_y: %4.0f   width: %4.0f   height: %4.0f)\n",
-                    detections[i*6+2], detections[i*6+3], detections[i*6+4], detections[i*6+5]);
+                cout << (int)detections[i*6+0] << ": " << (int)(round(detections[i*6+1]*100)) 
+                    << "%  \t(left_x: " << detections[i*6+2] << "\ttop_y: " << detections[i*6+3]
+                    << "\twidth: " << detections[i*6+4] << "\theight: " << detections[i*6+5]
+                    << ")" << endl;
             }
 #ifdef OPENCV
             // show detections using opencv
@@ -148,7 +149,7 @@ int main(int argc, char** argv)
         isOpened = false;
     if(!isOpened)
     {
-        printf("No video stream captured \n");
+        cout << "No video stream captured!" << endl;
         return -1;
     }
     Mat frame;
@@ -163,7 +164,7 @@ int main(int argc, char** argv)
             {
                 detect_mat(frame, detections, &num_output_class, &time_consumed, thresh, hier_thresh);
                 cout << "time_consumed: " << (float)time_consumed 
-                    << ", frame rate: " << 1/(float)time_consumed << endl;
+                    << "s, frame_rate: " << 1/(float)time_consumed << " frame/s" << endl;
             }
             else// do detect in a background thread
             {
@@ -171,9 +172,8 @@ int main(int argc, char** argv)
                 {
                     thread t(detect_mat, frame, detections, &num_output_class, &time_consumed, thresh, hier_thresh);
                     t.detach();
-                    printf("time_consumed: %f \n", (float)time_consumed);
                     cout << "time_consumed: " << (float)time_consumed 
-                        << ", frame rate: " << 1/(float)time_consumed << endl;
+                        << "s, frame_rate: " << 1/(float)time_consumed << " frame/s" << endl;
                     time_consumed = -1;
                 }
             }
