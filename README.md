@@ -2,7 +2,7 @@
 
 [This repository](https://github.com/zyy-cn/darknet_interface) is an INTERFACE for darknet, which allow you to use darknet detector in your own program(C, C++, Python, etc...) to do something interesting (like object detect using YOLO in your PC, Raspberry PI, Nvidia TX1, etc...) by linking with "libdarknet.so" and "libdetector.so".
 
-## Interface Functions Describe
+## Interface Functions Discription
 #### void detector_init(char *cfgfile, char *weightfile)
 - brief:        initiate an detector in memory by loading specific network configuration and pretrained weight file.
 - param[in1]:   path to the network configuration file
