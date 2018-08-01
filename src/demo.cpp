@@ -10,10 +10,12 @@
 #include <opencv2/imgproc/imgproc.hpp>  
 #include <opencv2/core/core.hpp> 
 #include <thread>
+#include <mutex>
+
 int FRAME_WINDOW_WIDTH = 320;
 int FRAME_WINDOW_HEIGHT = 240;
 using namespace std;
-using namespace cv;  
+using namespace cv;
 
 void detect_mat(Mat frame_detect, float* detections_output, int* num_output_class, double* time_consumed, float thresh, float hier_thresh)
 {
@@ -24,9 +26,14 @@ void detect_mat(Mat frame_detect, float* detections_output, int* num_output_clas
     float* detections = test_detector_cv(&input, thresh, hier_thresh, num_output_class);
     for(int i = 0; i < *num_output_class; i++)
     {
-        cout << (int)detections[i*6+0] << ": " << (int)(round(detections[i*6+1]*100)) 
-            << "%  \t(left_x: " << detections[i*6+2] << "\ttop_y: " << detections[i*6+3]
-            << "\twidth: " << detections[i*6+4] << "\theight: " << detections[i*6+5] << ")" << endl;
+        cout.width(2), cout << (int)detections[i*6+0] << ": ";
+        cout.setf(std::ios::left);
+        cout.width(5);
+        cout << to_string((int)(round(detections[i*6+1]*100)))+"%";
+        cout.width(12),cout << "(left_x: "+to_string((int)round(detections[i*6+2]));
+        cout.width(12),cout << "  top_y: "+to_string((int)round(detections[i*6+3]));
+        cout.width(12),cout << "  width: "+to_string((int)round(detections[i*6+4]));
+        cout.width(13),cout << "  height: "+to_string((int)round(detections[i*6+5])) << ")" << endl;
         detections_output[i*6+0] = detections[i*6+0];// ith detection's category
         detections_output[i*6+1] = detections[i*6+1];// ith detection's confidence score
         detections_output[i*6+2] = detections[i*6+2];// ith detection's top-left x-coordinate of bbox
@@ -58,7 +65,7 @@ void show_detection(Mat frame, float* detections, int num_output_class, Rect det
                     rectangle(frame, detections_rect, CV_RGB(0, 255, 0), 4, 8, 0);
                 else
                     rectangle(frame, detections_rect, CV_RGB(0, 0, 0), 4, 8, 0);
-                String info = "cls:"+ to_string(int(detections[i*6+0])) +", conf:"+ to_string(int(detections[i*6+1]*100)) +"%";
+                String info = "cls:"+ to_string(int(detections[i*6+0])) +", conf:"+ to_string((int)round(detections[i*6+1]*100)) +"%";
                 putText(frame, info, Point(detections_rect.x, detections_rect.y-10), FONT_HERSHEY_SIMPLEX, 1, Scalar(0,255,0), 2, 8);
             }
         }
@@ -90,7 +97,7 @@ int main(int argc, char** argv)
     float thresh = atof(argv[4]);
     float hier_thresh = 0.5;
     int num_output_class = 0;
-    double time_consumed = 0.0001;
+    double time_consumed = 0;
     VideoCapture cap;
     float *detections;
     Rect detections_rect;
@@ -116,10 +123,14 @@ int main(int argc, char** argv)
             cout << "num_output_class:" << num_output_class << endl;
             for(int i = 0; i < num_output_class; i++)
             {
-                cout << (int)detections[i*6+0] << ": " << (int)(round(detections[i*6+1]*100)) 
-                    << "%  \t(left_x: " << detections[i*6+2] << "\ttop_y: " << detections[i*6+3]
-                    << "\twidth: " << detections[i*6+4] << "\theight: " << detections[i*6+5]
-                    << ")" << endl;
+                cout.width(2), cout << (int)detections[i*6+0] << ": ";
+                cout.setf(std::ios::left);
+                cout.width(5);
+                cout << to_string((int)(round(detections[i*6+1]*100)))+"%";
+                cout.width(12),cout << "(left_x: "+to_string((int)round(detections[i*6+2]));
+                cout.width(12),cout << "  top_y: "+to_string((int)round(detections[i*6+3]));
+                cout.width(12),cout << "  width: "+to_string((int)round(detections[i*6+4]));
+                cout.width(13),cout << "  height: "+to_string((int)round(detections[i*6+5])) << ")" << endl;
             }
 #ifdef OPENCV
             // show detections using opencv
@@ -154,7 +165,7 @@ int main(int argc, char** argv)
     }
     Mat frame;
     detections = (float*)calloc(255*6, sizeof(float));
-    bool stop = false;  
+    bool stop = false;
     while(cap.read(frame))  
     {
         if(isOpened)
@@ -162,22 +173,22 @@ int main(int argc, char** argv)
             // --- detect objects ---
             if(!is_detect_in_thread)
             {
+                cout << endl << "------ detect begin ------" << endl;
                 detect_mat(frame, detections, &num_output_class, &time_consumed, thresh, hier_thresh);
                 cout << "time_consumed: " << (float)time_consumed 
                     << "s, frame_rate: " << 1/(float)time_consumed << " frame/s" << endl;
             }
             else// do detect in a background thread
             {
-                if(time_consumed > 0)
+                if(time_consumed >= 0)
                 {
-                    thread t(detect_mat, frame, detections, &num_output_class, &time_consumed, thresh, hier_thresh);
-                    t.detach();
                     cout << "time_consumed: " << (float)time_consumed 
                         << "s, frame_rate: " << 1/(float)time_consumed << " frame/s" << endl;
+                    cout << endl << "------ detect begin ------" << endl;
+                    thread t(detect_mat, frame, detections, &num_output_class, &time_consumed, thresh, hier_thresh);
+                    t.detach();
                     time_consumed = -1;
                 }
-                else if(time_consumed < 0)
-                    time_consumed += 0.5;
             }
             
             // --- show detections ---

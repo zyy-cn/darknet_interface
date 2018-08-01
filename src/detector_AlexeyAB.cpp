@@ -75,7 +75,6 @@ float* detect(image im, float thresh, float hier_thresh, int* num_output_class)
 
     float *X = sized.data;
     network_predict(net, X);
-    // printf("Predicted in %f seconds.\n", (what_time_is_it_now()-time));
     int nboxes = 0;
     detection *dets = get_network_boxes(&net, im.w, im.h, thresh, hier_thresh, 0, 1, &nboxes, letterbox);
     if (nms) do_nms_sort(dets, nboxes, l.classes, nms);
