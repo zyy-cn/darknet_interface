@@ -10,9 +10,6 @@
 #include <opencv2/imgproc/imgproc.hpp>  
 #include <opencv2/core/core.hpp> 
 #include <thread>
-#include <mutex>
-
-std::recursive_mutex g_lock;
 
 int FRAME_WINDOW_WIDTH = 320;
 int FRAME_WINDOW_HEIGHT = 240;
@@ -21,8 +18,6 @@ using namespace cv;
 
 void detect_mat(Mat frame_detect, float* detections_output, int* num_output_class, double* time_consumed, float thresh, float hier_thresh)
 {
-    g_lock.lock();
-
     double time = what_is_the_time_now();
     IplImage input = IplImage(frame_detect);// convert image format from mat to iplimage
 
@@ -31,9 +26,7 @@ void detect_mat(Mat frame_detect, float* detections_output, int* num_output_clas
     for(int i = 0; i < *num_output_class; i++)
     {
         cout.width(2), cout << (int)detections[i*6+0] << ": ";
-        cout.setf(std::ios::left);
-        cout.width(5);
-        cout << to_string((int)(round(detections[i*6+1]*100)))+"%";
+        cout.width(5), cout << to_string((int)(round(detections[i*6+1]*100)))+"%";
         cout.width(12),cout << "(left_x: "+to_string((int)round(detections[i*6+2]));
         cout.width(12),cout << "  top_y: "+to_string((int)round(detections[i*6+3]));
         cout.width(12),cout << "  width: "+to_string((int)round(detections[i*6+4]));
@@ -47,8 +40,6 @@ void detect_mat(Mat frame_detect, float* detections_output, int* num_output_clas
     }
     if(time_consumed)
         *time_consumed = (what_is_the_time_now() - time);
-    g_lock.unlock();
-
 }
 
 void show_detection(Mat frame, float* detections, int num_output_class, Rect detections_rect, bool is_show_image, bool is_show_detections)
@@ -57,6 +48,7 @@ void show_detection(Mat frame, float* detections, int num_output_class, Rect det
     {
         if(is_show_detections)
         {
+            String info;
             for(int i = 0; i < num_output_class; i++)
             {
                 detections_rect.x = detections[i*6+2];
@@ -71,7 +63,7 @@ void show_detection(Mat frame, float* detections, int num_output_class, Rect det
                     rectangle(frame, detections_rect, CV_RGB(0, 255, 0), 4, 8, 0);
                 else
                     rectangle(frame, detections_rect, CV_RGB(0, 0, 0), 4, 8, 0);
-                String info = "cls:"+ to_string(int(detections[i*6+0])) +", conf:"+ to_string((int)round(detections[i*6+1]*100)) +"%";
+                info = "cls:"+ to_string(int(detections[i*6+0])) +", conf:"+ to_string((int)round(detections[i*6+1]*100)) +"%";
                 putText(frame, info, Point(detections_rect.x, detections_rect.y-10), FONT_HERSHEY_SIMPLEX, 1, Scalar(0,255,0), 2, 8);
             }
         }
@@ -84,6 +76,7 @@ void show_detection(Mat frame, float* detections, int num_output_class, Rect det
 
 int main(int argc, char** argv)
 {
+    cout.setf(std::ios::left);
     if (argc < 5)
     {
         cout << "Usage: " << endl
@@ -107,11 +100,12 @@ int main(int argc, char** argv)
     VideoCapture cap;
     float *detections;
     Rect detections_rect;
-#ifdef OPENCV
-    bool is_show_image = true;
-    bool is_show_detections = true;
-    bool is_detect_in_thread = true;
-#endif
+
+
+    bool is_detect_in_thread = false;
+    bool is_show_image = false; // shut down for more stable detection when is_detect_in_thread==true
+    bool is_show_detections = false; // who can tell me why turn on this will lead to unstable result?
+
 
     detector_init(cfgfile, weightfile);
 
@@ -130,9 +124,7 @@ int main(int argc, char** argv)
             for(int i = 0; i < num_output_class; i++)
             {
                 cout.width(2), cout << (int)detections[i*6+0] << ": ";
-                cout.setf(std::ios::left);
-                cout.width(5);
-                cout << to_string((int)(round(detections[i*6+1]*100)))+"%";
+                cout.width(5), cout << to_string((int)(round(detections[i*6+1]*100)))+"%";
                 cout.width(12),cout << "(left_x: "+to_string((int)round(detections[i*6+2]));
                 cout.width(12),cout << "  top_y: "+to_string((int)round(detections[i*6+3]));
                 cout.width(12),cout << "  width: "+to_string((int)round(detections[i*6+4]));
@@ -161,47 +153,40 @@ int main(int argc, char** argv)
     cout << "need OpenCV!" << endl;
     return -1;
 #endif
-    bool isOpened = true;
-    if(!cap.isOpened())  
-        isOpened = false;
-    if(!isOpened)
+    if(!cap.isOpened())
     {
         cout << "No video stream captured!" << endl;
         return -1;
     }
     Mat frame;
     detections = (float*)calloc(255*6, sizeof(float));
-    bool stop = false;
     while(cap.read(frame))  
     {
-        if(isOpened)
+        // --- detect objects ---
+        if(!is_detect_in_thread)
         {
-            // --- detect objects ---
-            if(!is_detect_in_thread)
-            {
-                cout << endl << "------ detect begin ------" << endl;
-                detect_mat(frame, detections, &num_output_class, &time_consumed, thresh, hier_thresh);
-                cout << "time_consumed: " << (float)time_consumed 
-                    << "s, frame_rate: " << 1/(float)time_consumed << " frame/s" << endl;
-            }
-            else// do detect in a background thread
-            {
-                if(time_consumed >= 0)
-                {
-                    cout << "time_consumed: " << (float)time_consumed 
-                        << "s, frame_rate: " << 1/(float)time_consumed << " frame/s" << endl;
-                    cout << endl << "------ detect begin ------" << endl;
-                    thread t(detect_mat, frame, detections, &num_output_class, &time_consumed, thresh, hier_thresh);
-                    t.detach();
-                    time_consumed = -1;
-                }
-            }
-            
-            // --- show detections ---
-            show_detection(frame, detections, num_output_class, detections_rect, is_show_image, is_show_detections);
-            if(waitKey(1) >=0)
-                stop = true;
+            cout << endl << "------ detect begin ------" << endl;
+            detect_mat(frame, detections, &num_output_class, &time_consumed, thresh, hier_thresh);
+            cout << "time_consumed: " << (float)time_consumed 
+                << "s, frame_rate: " << 1/(float)time_consumed << " frame/s" << endl;
         }
+        else// do detect in a background thread
+        {
+            if(time_consumed >= 0)
+            {
+                cout << "time_consumed: " << (float)time_consumed 
+                     << "s, frame_rate: " << 1/(float)time_consumed << " frame/s" << endl;
+                cout << endl << "------ detect begin ------" << endl;
+                thread t(detect_mat, frame, detections, &num_output_class, &time_consumed, thresh, hier_thresh);
+                t.detach();
+                time_consumed = -1;
+            }
+        }
+        
+        // --- show detections ---
+        show_detection(frame, detections, num_output_class, detections_rect, is_show_image, is_show_detections);
+        if(waitKey(30) >=0)
+            break;
     }
 
     // ====== uninit ======

@@ -77,6 +77,7 @@ float* detect(image im, float thresh, float hier_thresh, int* num_output_class)
     network_predict(net, X);
     int nboxes = 0;
     detection *dets = get_network_boxes(&net, im.w, im.h, thresh, hier_thresh, 0, 1, &nboxes, letterbox);
+    // printf("in detect, nboxes is: %d\n", nboxes);
     if (nms) do_nms_sort(dets, nboxes, l.classes, nms);
 
     int selected_detections_num;
