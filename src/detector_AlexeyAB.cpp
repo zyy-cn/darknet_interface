@@ -63,7 +63,7 @@ void detector_uninit()
 
 double what_is_the_time_now()
 {
-    return what_time_is_it_now();
+    return what_time_is_it_now() + 8*60*60; // change to Beijing time
 }
 
 float* detect(image im, float thresh, float hier_thresh, int* num_output_class)
