@@ -1,4 +1,4 @@
-# this program only works under opencv2 because IplImage is unsupported by opencv3
+# this program only works under opencv2 because IplImage is unsupported by opencv3 in python
 # this program is a work-in-progress now.
 import os
 import sys

@@ -84,7 +84,7 @@ Modify those variants **listed on the top of gcc.sh** according to your own envi
 $ ./gcc.sh
 $ cd ..
 ```
-after do this you can get "libdetector.so" and "libdetector_c.so" in darknet_interface/lib.   
+after do this you can get "libdetector.so"(for CPP) and "libdetector_c.so"(for C) in darknet_interface/lib.   
 Note that your must compile and install OPENCV(version 3.3.1 or before) firstly if you want to use it, and **macro definition "-DOPENCV" should be added** when those two shared libraries compiled by setting "IS_USE_OPENCV" to "1" in gcc.sh. If you decide to use GPU and CUDNN on step 1, **don't forget to add "-DGPU" and "-DCUDNN" correspondly** by setting "IS_USE_GPU" and "IS_USE_CUDNN" to "1", And "0" if you don't mean to.
 
 #### step 3. Run demo
@@ -101,6 +101,17 @@ $ cd script
 $ export LD_LIBRARY_PATH=../lib:$LD_LIBRARY_PATH
 $ python2 detect_dir_img.py ${cfg} ${weights} ${input directory} ${output directory}
 ```
+
+#### step 4. use this interface in your own programs
+- in C/CPP:
+    - include "detector.h";
+    - link with "libdarknet.so", "libdetector.so"(or "libdetector_c.so") compiled in step 1 and 2;
+    - add macro definition ("-DOPENCV", "-DGPU" and "-DCUDNN") and set path to the libraries and headers if you want to use them;
+    - **make sure your "libdarknet.so" is compiled with GPU and CUDNN in step 1 before add "-DGPU" and "-DCUDNN" when your program compiled**
+    - view "demo.cpp" and "gcc.sh" for more details
+- in python:
+    - view "detect_dir_img.py" for more details
+
 
 ## TODO
 - [x] Add GPU support
