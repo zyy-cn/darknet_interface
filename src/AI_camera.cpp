@@ -37,6 +37,22 @@ void get_Beijing_time(int* year, int* month, int* day, int* hour, int* min, doub
     *day = a->tm_mday;
 }
 
+void save_img_by_time(Mat image)
+{
+    int year, month, day, hour, min;
+    double sec;
+    get_Beijing_time(&year, &month, &day, &hour, &min, &sec);
+    String s_month = (month<10?"0":"")+to_string(month);
+    String s_day = (day<10?"0":"")+to_string(day);
+    String s_hour = (hour<10?"0":"")+to_string(hour);
+    String s_min= (hour<10?"0":"")+to_string(min);
+    String s_sec = (sec<10?"0":"")+to_string((int)sec);
+    String save_path =  "cap/"+to_string(year)+s_month+s_day+s_hour+s_min+s_sec+".jpg";
+    ifstream in(save_path);
+    if(!in)
+        imwrite(save_path, image);
+}
+
 void detect_mat(Mat frame_detect, float* detections_output, int* num_output_class, double* time_consumed, float thresh, float hier_thresh, int cap_category_index)
 {
     double time = what_is_the_time_now();
@@ -63,21 +79,10 @@ void detect_mat(Mat frame_detect, float* detections_output, int* num_output_clas
         if(detections_output[i*6+0] == cap_category_index)
             is_save = true;
     }
-    // --- save frame ---
+    // --- do something ---
     if(is_save)
     {
-        int year, month, day, hour, min;
-        double sec;
-        get_Beijing_time(&year, &month, &day, &hour, &min, &sec);
-        String s_month = (month<10?"0":"")+to_string(month);
-        String s_day = (day<10?"0":"")+to_string(day);
-	    String s_hour = (hour<10?"0":"")+to_string(hour);
-	    String s_min= (hour<10?"0":"")+to_string(min);
-	    String s_sec = (sec<10?"0":"")+to_string((int)sec);
-        String save_path =  "cap/"+to_string(year)+s_month+s_day+s_hour+s_min+s_sec+".jpg";
-        ifstream in(save_path);
-        if(!in)
-            imwrite(save_path, frame_detect);
+        save_img_by_time(frame_detect);
     }
 
     if(time_consumed)
