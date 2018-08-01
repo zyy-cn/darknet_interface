@@ -4,13 +4,13 @@
 
 ## Interface Functions Discription
 #### void detector_init(char *cfgfile, char *weightfile)
-- brief:        initiate an detector in memory by loading specific network configuration and pretrained weight file.
+- brief:        initiate an detector into the memory by loading specific network configuration and pretrained weight file.
 - param[in1]:   path to the network configuration file
 - param[in2]:   path to the network pretrained weight file
 - retval:       void
 
 #### float* test_detector(char *filename, float thresh, float hier_thresh, int* num_output_class)
-- brief:        detect objects in specific image file.
+- brief:        detect objects in a specific image file.
 - param[in1]:   path to the image file which want to be detected
 - param[in2]:   detect thresh
 - param[in3]:   set 0.5 as default and don't care in yolov3 (maybe used only for yolo9000?)
@@ -107,8 +107,8 @@ $ python2 detect_dir_img.py ${cfg} ${weights} ${input directory} ${output direct
     - include "detector.h";
     - link with "libdarknet.so", "libdetector.so"(or "libdetector_c.so") compiled in step 1 and 2;
     - add macro definition ("-DOPENCV", "-DGPU" and "-DCUDNN") and set path to the libraries and headers if you want to use them;
-    - **make sure your "libdarknet.so" is compiled with GPU and CUDNN in step 1 before add "-DGPU" and "-DCUDNN" when your program compiled**
-    - view "demo.cpp" and "gcc.sh" for more details
+    - **make sure your "libdarknet.so" is compiled with GPU and CUDNN in step 1 before add "-DGPU" and "-DCUDNN" when your program compiled**;
+    - view "demo.cpp" and "gcc.sh" for more details.
 - in python:
     - view "detect_dir_img.py" for more details
 
