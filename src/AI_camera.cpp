@@ -71,7 +71,10 @@ void detect_mat(Mat frame_detect, float* detections_output, int* num_output_clas
         get_Beijing_time(&year, &month, &day, &hour, &min, &sec);
         String s_month = (month<10?"0":"")+to_string(month);
         String s_day = (day<10?"0":"")+to_string(day);
-        String save_path =  "cap/"+to_string(year)+s_month+s_day+to_string(hour)+to_string(min)+to_string((int)sec)+".jpg";
+	    String s_hour = (hour<10?"0":"")+to_string(hour);
+	    String s_min= (hour<10?"0":"")+to_string(min);
+	    String s_sec = (sec<10?"0":"")+to_string((int)sec);
+        String save_path =  "cap/"+to_string(year)+s_month+s_day+s_hour+s_min+s_sec+".jpg";
         ifstream in(save_path);
         if(!in)
             imwrite(save_path, frame_detect);
@@ -116,26 +119,23 @@ void show_detection(Mat frame, float* detections, int num_output_class, Rect det
 int main(int argc, char** argv)
 {
     cout.setf(std::ios::left);
-    if (argc < 5)
+    if (argc < 6)
     {
-        cout << "Usage: " << endl
-        << "  detect video :" << endl << "    $ "
-        << argv[0] << " video cfg_path weight_path thresh video_path capture_category_index" << endl
-        << "  detect webcam:" << endl << "    $ "
-        << argv[0] << " webcam cfg_path weight_path thresh webcam_index capture_category_index" << endl
+        cout << "Usage: " << endl << "$ "
+        << argv[0] << " cfg_path weight_path thresh webcam_index cap_cls_idx" << endl
         << endl;
         return -1;
     }
     // ====== init ======
-    char *type = argv[1];
-    char *cfgfile = argv[2];
-    char *weightfile = argv[3];
-    float thresh = atof(argv[4]);
-    int  cap_category_index = atoi(argv[6]);
+    char *cfgfile = argv[1];
+    char *weightfile = argv[2];
+    float thresh = atof(argv[3]);
+    VideoCapture cap = VideoCapture(atoi(argv[4]));// init camera
+    int  cap_category_index = atoi(argv[5]);
     float hier_thresh = 0.5;
     int num_output_class = 0;
     double time_consumed = 0;
-    VideoCapture cap;
+    
     float *detections;
     Rect detections_rect;
 
@@ -147,17 +147,7 @@ int main(int argc, char** argv)
 
     detector_init(cfgfile, weightfile);
 
-    // ====== detect in video or webcam ======
-    if(0==strcmp(type, "video"))
-    {
-        cout << "detect video" << endl;
-        cap = VideoCapture(argv[5]);// load video from file
-    }
-    else if(0==strcmp(type, "webcam"))
-    {
-        cout << "detect webcam" << endl;
-        cap = VideoCapture(atoi(argv[5]));// init camera
-    }
+    // ====== detect in webcam only ======
 #ifndef OPENCV
     cout << "need OpenCV!" << endl;
     return -1;
