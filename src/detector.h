@@ -1,5 +1,6 @@
 // This header is used for both detector.cpp(the version of original darknet)
-// and detector_AlexeyAB.cpp(the version of AlexeyAB) 
+// and detector_AlexeyAB.cpp(the version of AlexeyAB)
+// view discription here(https://github.com/zyy-cn/darknet_interface/blob/develop/README.md#interface-functions-discription)
 
 #ifdef OPENCV
 #ifdef __cplusplus
