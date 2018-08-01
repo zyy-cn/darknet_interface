@@ -103,8 +103,8 @@ int main(int argc, char** argv)
 
 
     bool is_detect_in_thread = false;
-    bool is_show_image = false; // shut down for more stable detection when is_detect_in_thread==true
-    bool is_show_detections = false; // who can tell me why turn on this will lead to unstable result?
+    bool is_show_image = true; // shut down for more stable detection when is_detect_in_thread==true
+    bool is_show_detections = true;
 
 
     detector_init(cfgfile, weightfile);
