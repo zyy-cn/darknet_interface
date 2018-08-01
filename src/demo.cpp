@@ -12,6 +12,8 @@
 #include <thread>
 #include <mutex>
 
+std::recursive_mutex g_lock;
+
 int FRAME_WINDOW_WIDTH = 320;
 int FRAME_WINDOW_HEIGHT = 240;
 using namespace std;
@@ -19,6 +21,8 @@ using namespace cv;
 
 void detect_mat(Mat frame_detect, float* detections_output, int* num_output_class, double* time_consumed, float thresh, float hier_thresh)
 {
+    g_lock.lock();
+
     double time = what_is_the_time_now();
     IplImage input = IplImage(frame_detect);// convert image format from mat to iplimage
 
@@ -43,6 +47,8 @@ void detect_mat(Mat frame_detect, float* detections_output, int* num_output_clas
     }
     if(time_consumed)
         *time_consumed = (what_is_the_time_now() - time);
+    g_lock.unlock();
+
 }
 
 void show_detection(Mat frame, float* detections, int num_output_class, Rect detections_rect, bool is_show_image, bool is_show_detections)
