@@ -29,7 +29,7 @@ void detector_init(char *cfgfile, char *weightfile)
 
 double what_is_the_time_now()
 {
-    return what_time_is_it_now();
+    return what_time_is_it_now() + 8*60*60; // change to Beijing time
 }
 void detector_uninit()
 {
