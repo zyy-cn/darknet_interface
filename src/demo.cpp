@@ -90,14 +90,14 @@ int main(int argc, char** argv)
     float thresh = atof(argv[4]);
     float hier_thresh = 0.5;
     int num_output_class = 0;
-    double time_consumed = 0;
+    double time_consumed = 0.0001;
     VideoCapture cap;
     float *detections;
     Rect detections_rect;
 #ifdef OPENCV
     bool is_show_image = true;
     bool is_show_detections = true;
-    bool is_detect_in_thread = false;
+    bool is_detect_in_thread = true;
 #endif
 
     detector_init(cfgfile, weightfile);
@@ -168,7 +168,7 @@ int main(int argc, char** argv)
             }
             else// do detect in a background thread
             {
-                if(time_consumed >= 0)
+                if(time_consumed > 0)
                 {
                     thread t(detect_mat, frame, detections, &num_output_class, &time_consumed, thresh, hier_thresh);
                     t.detach();
@@ -176,6 +176,8 @@ int main(int argc, char** argv)
                         << "s, frame_rate: " << 1/(float)time_consumed << " frame/s" << endl;
                     time_consumed = -1;
                 }
+                else if(time_consumed < 0)
+                    time_consumed += 0.5;
             }
             
             // --- show detections ---
