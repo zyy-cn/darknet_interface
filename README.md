@@ -2,6 +2,41 @@
 
 [This repository](https://github.com/zyy-cn/darknet_interface) is an INTERFACE for darknet, which allow you to use darknet detector in your own program(C, C++, Python, etc...) to do something interesting (like object detect using YOLO in your PC, Raspberry PI, Nvidia TX1, etc...) by linking with "libdarknet.so" and "libdetector.so".
 
+## Interface Functions Discription
+#### void detector_init(char *cfgfile, char *weightfile)
+- brief:		initiate an detector in memory by loading specific network configuration and pretrained weight file.
+- param[in1]:	path to the network configuration file
+- param[in2]:	path to the network pretrained weight file
+- retval:		void
+
+#### float* test_detector(char *filename, float thresh, float hier_thresh, int* num_output_class)
+- brief:		detect objects in specific image file.
+- param[in1]:	path to the image file which want to be detected
+- param[in2]:	detect thresh
+- param[in3]:	set 0.5 as default and don't care in yolov3 (maybe used only for yolo9000?)
+- param[in4]:	the number of objects being detected in image
+- retval:		information about boundary box according to all objects detected in image. Each object is described using a set of six float data in sequence:
+    - class index
+    - confidence score
+    - top-left x-coordinate of bbox
+    - top-left y-coordinate of bbox
+    - width of bbox
+    - height of bbox
+
+#### float* test_detector_cv(IplImage* im, float thresh, float hier_thresh, int* num_output_class);
+- brief:		detect objects in an IplImage encoded by OpenCV.
+- param[in1]:	an IplImage which want to be detected
+- param[in2~4]:	the same as "test_detector" described before
+- retval:		the same as "test_detector" described before
+
+#### void detector_uninit()
+- brief:		free memory when all detect task finished.
+- retval:		void
+
+#### double what_is_the_time_now()
+- brief:		grab the current time
+- retval:		an double representing the current time(In seconds)
+
 ## How to use
 #### Step 1. Compile your darknet
 **Note that this interface can be used both for the [original darknet](https://github.com/pjreddie/darknet) and [AlexeyAB version](https://github.com/AlexeyAB/darknet)**, you can choose any one you like to compile.  
