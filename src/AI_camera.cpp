@@ -45,9 +45,10 @@ void save_img_by_time(Mat image)
     String s_month = (month<10?"0":"")+to_string(month);
     String s_day = (day<10?"0":"")+to_string(day);
     String s_hour = (hour<10?"0":"")+to_string(hour);
-    String s_min= (hour<10?"0":"")+to_string(min);
+    String s_min= (s_min<10?"0":"")+to_string(min);
     String s_sec = (sec<10?"0":"")+to_string((int)sec);
-    String save_path =  "cap/"+to_string(year)+s_month+s_day+s_hour+s_min+s_sec+".jpg";
+    // String save_path =  "cap/"+to_string(year)+s_month+s_day+s_hour+s_min+s_sec+".jpg";
+    String save_path =  "cap/"+to_string(year)+s_month+s_day+s_hour+s_min+".jpg";
     ifstream in(save_path);
     if(!in)
         imwrite(save_path, image);
@@ -147,7 +148,7 @@ int main(int argc, char** argv)
 
     bool is_detect_in_thread = true;
     bool is_show_image = false; // shut down for more stable detection when is_detect_in_thread==true
-    bool is_show_detections = true;
+    bool is_show_detections = false;
 
 
     detector_init(cfgfile, weightfile);
