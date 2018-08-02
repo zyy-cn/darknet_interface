@@ -16,6 +16,7 @@ OPENCV_LIB_PATH=/home/pi/local_install/lib
 
 
 # ====== compile libraries and demo program automaticly and DO NOT make any change if not necessary ======
+echo 'prepare to build...'
 DETECTOR_BIN_PATH=../bin
 DETECTOR_LIB_PATH=../lib
 if [ $IS_USE_DARKNET_ALEXEYAB == 1 ];then
@@ -42,8 +43,12 @@ if [ $IS_USE_GPU == 1 ];then
 else
     CFLAGS+=\ -DOPENBLAS
 fi
-mkdir $DETECTOR_LIB_PATH
-mkdir $DETECTOR_BIN_PATH
+if [ ! -d $DETECTOR_LIB_PATH ];then
+    mkdir $DETECTOR_LIB_PATH
+fi
+if [ ! -d $DETECTOR_BIN_PATH ];then
+    mkdir $DETECTOR_BIN_PATH
+fi
 rm $DETECTOR_LIB_PATH/libdetector.so
 rm $DETECTOR_LIB_PATH/libdetector_c.so
 rm $DETECTOR_LIB_PATH/libdarknet.so
@@ -52,14 +57,21 @@ ln -s $DARKNET_LIB_PATH/libdarknet.so $DETECTOR_LIB_PATH/libdarknet.so
 ln -s detector$DARKNET_SUFFIX.cpp detector.c
 
 # compile shared libraries
+echo 'building libdetector.so...'
 g++ -fPIC -shared -O3 -o $DETECTOR_LIB_PATH/libdetector.so detector$DARKNET_SUFFIX.cpp -I. -I$DARKNET_INCLUDE_PATH -I$DARKNET_SRC_PATH -I$CUDA_PATH/include -L$DARKNET_LIB_PATH -L$CUDA_PATH/lib64 -ldarknet -fopenmp -lgomp $CFLAGS $OPENCV
+echo 'building libdetector_c.so...'
 gcc -fPIC -shared -O3 -o $DETECTOR_LIB_PATH/libdetector_c.so detector.c -I. -I$DARKNET_INCLUDE_PATH -I$DARKNET_SRC_PATH -I$CUDA_PATH/include -L$DARKNET_LIB_PATH -L$CUDA_PATH/lib64 -ldarknet -fopenmp -lgomp $CFLAGS $OPENCV
 
 # compile demo
+echo 'compiling demo...'
 g++ -std=c++11 -O3  -o $DETECTOR_BIN_PATH/demo demo.cpp -I. -L$DARKNET_LIB_PATH -L$DETECTOR_LIB_PATH -ldetector -fopenmp -pthread -lgomp -ldarknet $OPENCV $CFLAGS
 
 # compile AI Camera
-mkdir $DETECTOR_BIN_PATH/cap
+echo 'compiling AI_camera...'
+if [ ! -d $DETECTOR_BIN_PATH/cap ];then
+    mkdir $DETECTOR_BIN_PATH/cap
+fi
 g++ -std=c++11 -O3  -o $DETECTOR_BIN_PATH/AI_camera AI_camera.cpp -I. -L$DARKNET_LIB_PATH -L$DETECTOR_LIB_PATH -ldetector -fopenmp -pthread -lgomp -ldarknet $OPENCV $CFLAGS
 
+echo '--- done ---' 
 rm detector.c
