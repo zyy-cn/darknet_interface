@@ -54,6 +54,19 @@ void save_img_by_time(Mat image)
         imwrite(save_path, image);
 }
 
+void print_detections(float* detections, int num_output_class)
+{
+    for(int i = 0; i < num_output_class; i++)
+    {
+        cout.width(2), cout << (int)detections[i*6+0] << ": ";
+        cout.width(5), cout << to_string((int)(round(detections[i*6+1]*100)))+"%";
+        cout.width(12),cout << "(left_x: "+to_string((int)round(detections[i*6+2]));
+        cout.width(12),cout << "  top_y: "+to_string((int)round(detections[i*6+3]));
+        cout.width(12),cout << "  width: "+to_string((int)round(detections[i*6+4]));
+        cout.width(13),cout << "  height: "+to_string((int)round(detections[i*6+5])) << ")" << endl;
+    }
+}
+
 void detect_mat(Mat frame_detect, float* detections_output, int* num_output_class, double* time_consumed, float thresh, float hier_thresh, int cap_category_index)
 {
     double time = what_is_the_time_now();
@@ -64,12 +77,6 @@ void detect_mat(Mat frame_detect, float* detections_output, int* num_output_clas
     float* detections = test_detector_cv(&input, thresh, hier_thresh, num_output_class);
     for(int i = 0; i < *num_output_class; i++)
     {
-        cout.width(2), cout << (int)detections[i*6+0] << ": ";
-        cout.width(5), cout << to_string((int)(round(detections[i*6+1]*100)))+"%";
-        cout.width(12),cout << "(left_x: "+to_string((int)round(detections[i*6+2]));
-        cout.width(12),cout << "  top_y: "+to_string((int)round(detections[i*6+3]));
-        cout.width(12),cout << "  width: "+to_string((int)round(detections[i*6+4]));
-        cout.width(13),cout << "  height: "+to_string((int)round(detections[i*6+5])) << ")" << endl;
         detections_output[i*6+0] = detections[i*6+0];// ith detection's category
         detections_output[i*6+1] = detections[i*6+1];// ith detection's confidence score
         detections_output[i*6+2] = detections[i*6+2];// ith detection's top-left x-coordinate of bbox
@@ -81,6 +88,7 @@ void detect_mat(Mat frame_detect, float* detections_output, int* num_output_clas
             is_save = true;
     }
     // --- do something ---
+    print_detections(detections, *num_output_class);
     if(is_save)
     {
         save_img_by_time(frame_detect);
@@ -90,7 +98,7 @@ void detect_mat(Mat frame_detect, float* detections_output, int* num_output_clas
         *time_consumed = (what_is_the_time_now() - time);
 }
 
-void show_detection(Mat frame, float* detections, int num_output_class, Rect detections_rect, bool is_show_image, bool is_show_detections)
+void show_detections(Mat frame, float* detections, int num_output_class, Rect detections_rect, bool is_show_image, bool is_show_detections)
 {
     if(is_show_image)
     {
@@ -189,7 +197,7 @@ int main(int argc, char** argv)
         }
         
         // --- show detections ---
-        show_detection(frame, detections, num_output_class, detections_rect, is_show_image, is_show_detections);
+        show_detections(frame, detections, num_output_class, detections_rect, is_show_image, is_show_detections);
         if(waitKey(30) >=0)
             break;
     }
