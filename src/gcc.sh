@@ -58,7 +58,9 @@ fi
 if [ -f $DETECTOR_LIB_PATH/libdetector.so ];then
     rm $DETECTOR_LIB_PATH/libdarknet.so
 fi
-ln -s $DARKNET_LIB_PATH/libdarknet.so $DETECTOR_LIB_PATH/libdarknet.so
+if [ ! -f $DETECTOR_LIB_PATH/libdarknet.so ];then
+    ln -s $DARKNET_LIB_PATH/libdarknet.so $DETECTOR_LIB_PATH/libdarknet.so
+fi
 ln -s detector$DARKNET_SUFFIX.cpp detector.c
 
 # compile shared libraries
