@@ -2,13 +2,13 @@
 
 IS_USE_DARKNET_ALEXEYAB=1 # '0' for the original darknet and '1' for the AlexeyAB version
 
-IS_USE_GPU=0
+IS_USE_GPU=1
 IS_USE_CUDNN=1
 CUDA_PATH=/usr/local/cuda # cudnn's header and libs should be found in $CUDA_PATH/include and $CUDA_PATH/lib64 correspondly
 
 IS_USE_OPENCV=1
-OPENCV_INCLUDE_PATH=/home/pi/local_install/include
-OPENCV_LIB_PATH=/home/pi/local_install/lib
+OPENCV_INCLUDE_PATH=/home/m/local_install/include
+OPENCV_LIB_PATH=/home/m/local_install/lib
 #OPENCV_INCLUDE_PATH=/usr/local/include
 #OPENCV_LIB_PATH=/usr/local/lib
 
@@ -49,11 +49,16 @@ fi
 if [ ! -d $DETECTOR_BIN_PATH ];then
     mkdir $DETECTOR_BIN_PATH
 fi
-rm $DETECTOR_LIB_PATH/libdetector.so
-rm $DETECTOR_LIB_PATH/libdetector_c.so
-rm $DETECTOR_LIB_PATH/libdarknet.so
+if [ -f $DETECTOR_LIB_PATH/libdetector.so ];then
+    rm $DETECTOR_LIB_PATH/libdetector.so
+fi
+if [ -f $DETECTOR_LIB_PATH/libdetector.so ];then
+    rm $DETECTOR_LIB_PATH/libdetector_c.so
+fi
+if [ -f $DETECTOR_LIB_PATH/libdetector.so ];then
+    rm $DETECTOR_LIB_PATH/libdarknet.so
+fi
 ln -s $DARKNET_LIB_PATH/libdarknet.so $DETECTOR_LIB_PATH/libdarknet.so
-
 ln -s detector$DARKNET_SUFFIX.cpp detector.c
 
 # compile shared libraries
