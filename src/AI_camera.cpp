@@ -46,9 +46,10 @@ void save_img_by_time(Mat image)
     String s_day = (day<10?"0":"")+to_string(day);
     String s_hour = (hour<10?"0":"")+to_string(hour);
     String s_min= (min<10?"0":"")+to_string(min);
-    String s_sec = (sec<10?"0":"")+to_string((int)sec);
-    // String save_path =  "cap/"+to_string(year)+s_month+s_day+s_hour+s_min+s_sec+".jpg";
-    String save_path =  "cap/"+to_string(year)+s_month+s_day+s_hour+s_min+".jpg";
+    String s_sec = (sec<10?"0":"")+to_string(sec);
+    // String s_sec = (sec<10?"0":"")+to_string((int)sec);
+    String save_path =  "cap/"+to_string(year)+s_month+s_day+s_hour+s_min+s_sec+".jpg";
+    // String save_path =  "cap/"+to_string(year)+s_month+s_day+s_hour+s_min+".jpg";
     ifstream in(save_path);
     if(!in)
         imwrite(save_path, image);
@@ -67,7 +68,17 @@ void print_detections(float* detections, int num_output_class)
     }
 }
 
-void detect_mat(Mat frame_detect, float* detections_output, int* num_output_class, double* time_consumed, float thresh, float hier_thresh, int cap_category_index)
+bool is_target_detected(float* detections, int num_output_class, int target_class_index)
+{
+    for(int i = 0; i < num_output_class; i++)
+    {
+        if(detections[i*6+0] == target_class_index)
+            return true;
+    }
+    return false;
+}
+
+void detect_mat(Mat frame_detect, float* detections_output, int* num_output_class, double* time_consumed, float thresh, float hier_thresh, int target_class_index)
 {
     double time = what_is_the_time_now();
     IplImage input = IplImage(frame_detect);// convert image format from mat to iplimage
@@ -83,15 +94,12 @@ void detect_mat(Mat frame_detect, float* detections_output, int* num_output_clas
         detections_output[i*6+3] = detections[i*6+3];// ith detection's top-left y-coordinate of bbox
         detections_output[i*6+4] = detections[i*6+4];// ith detection's width of bbox
         detections_output[i*6+5] = detections[i*6+5];// ith detection's height of bbox
-
-        if(detections_output[i*6+0] == cap_category_index)
-            is_save = true;
     }
     // --- do something ---
     print_detections(detections, *num_output_class);
-    if(is_save)
+    // if(is_target_detected(detections_output, * num_output_class, target_class_index))
     {
-        save_img_by_time(frame_detect);
+        // save_img_by_time(frame_detect);
     }
 
     if(time_consumed)
@@ -145,7 +153,7 @@ int main(int argc, char** argv)
     char *weightfile = argv[2];
     float thresh = atof(argv[3]);
     VideoCapture cap = VideoCapture(atoi(argv[4]));// init camera
-    int  cap_category_index = atoi(argv[5]);
+    int  target_class_index = atoi(argv[5]);
     float hier_thresh = 0.5;
     int num_output_class = 0;
     double time_consumed = 0;
@@ -179,7 +187,7 @@ int main(int argc, char** argv)
         if(!is_detect_in_thread)
         {
             cout << endl << "------ detect begin ------" << endl;
-            detect_mat(frame, detections, &num_output_class, &time_consumed, thresh, hier_thresh, cap_category_index);
+            detect_mat(frame, detections, &num_output_class, &time_consumed, thresh, hier_thresh, target_class_index);
             cout << "time_consumed: " << (float)time_consumed 
                 << "s, frame_rate: " << 1/(float)time_consumed << " frame/s" << endl;
         }
@@ -190,10 +198,16 @@ int main(int argc, char** argv)
                 cout << "time_consumed: " << (float)time_consumed 
                      << "s, frame_rate: " << 1/(float)time_consumed << " frame/s" << endl;
                 cout << endl << "------ detect begin ------" << endl;
-                thread t(detect_mat, frame, detections, &num_output_class, &time_consumed, thresh, hier_thresh, cap_category_index);
+                thread t(detect_mat, frame, detections, &num_output_class, &time_consumed, thresh, hier_thresh, target_class_index);
                 t.detach();
                 time_consumed = -1;
             }
+        }
+        
+        // ------ do something if target detected ------
+        if(is_target_detected(detections, num_output_class, target_class_index))
+        {
+            save_img_by_time(frame);
         }
         
         // --- show detections ---
