@@ -5,6 +5,7 @@
 #include <iostream>
 #include <time.h>
 #include <fstream>
+#include <vector>
 
 #ifdef OPENCV
 #include "opencv2/core/types_c.h"
@@ -47,9 +48,9 @@ void save_img_by_time(Mat image)
     String s_hour = (hour<10?"0":"")+to_string(hour);
     String s_min= (min<10?"0":"")+to_string(min);
     String s_sec = (sec<10?"0":"")+to_string(sec);
-    // String s_sec = (sec<10?"0":"")+to_string((int)sec);
-    String save_path =  "cap/"+to_string(year)+s_month+s_day+s_hour+s_min+s_sec+".jpg";
-    // String save_path =  "cap/"+to_string(year)+s_month+s_day+s_hour+s_min+".jpg";
+    // String s_sec = (sec<10?"0":"")+to_string((int)sec);// more accurate
+    // String save_path =  "cap/"+to_string(year)+s_month+s_day+s_hour+s_min+s_sec+".jpg"; // exact to the second
+    String save_path =  "cap/"+to_string(year)+s_month+s_day+s_hour+s_min+".jpg";// exact to the minute
     ifstream in(save_path);
     if(!in)
         imwrite(save_path, image);
@@ -68,22 +69,22 @@ void print_detections(float* detections, int num_output_class)
     }
 }
 
-bool is_target_detected(float* detections, int num_output_class, int target_class_index)
+bool is_target_detected(float* detections, int num_output_class, vector<int> target_class_index_list)
 {
     for(int i = 0; i < num_output_class; i++)
     {
-        if(detections[i*6+0] == target_class_index)
-            return true;
+        for(int j = 0; j < target_class_index_list.size(); j++)
+            if(detections[i*6+0] == target_class_index_list[j])
+                return true;
     }
     return false;
 }
 
-void detect_mat(Mat frame_detect, float* detections_output, int* num_output_class, double* time_consumed, float thresh, float hier_thresh, int target_class_index)
+void detect_mat(Mat frame_detect, float* detections_output, int* num_output_class, double* time_consumed, float thresh, float hier_thresh, vector<int> target_class_index_list)
 {
     double time = what_is_the_time_now();
     IplImage input = IplImage(frame_detect);// convert image format from mat to iplimage
     
-    bool is_save = false;
     // do detect in an iplimage converted from mat
     float* detections = test_detector_cv(&input, thresh, hier_thresh, num_output_class);
     for(int i = 0; i < *num_output_class; i++)
@@ -97,7 +98,7 @@ void detect_mat(Mat frame_detect, float* detections_output, int* num_output_clas
     }
     // --- do something ---
     print_detections(detections, *num_output_class);
-    // if(is_target_detected(detections_output, * num_output_class, target_class_index))
+    // if(is_target_detected(detections_output, * num_output_class, target_class_index_list))
     {
         // save_img_by_time(frame_detect);
     }
@@ -106,7 +107,7 @@ void detect_mat(Mat frame_detect, float* detections_output, int* num_output_clas
         *time_consumed = (what_is_the_time_now() - time);
 }
 
-void show_detections(Mat frame, float* detections, int num_output_class, Rect detections_rect, bool is_show_image, bool is_show_detections)
+void show_detections(Mat frame, float* detections, int num_output_class, Rect detections_rect, vector<int> target_class_index_list, bool is_show_image, bool is_show_detections)
 {
     if(is_show_image)
     {
@@ -115,20 +116,26 @@ void show_detections(Mat frame, float* detections, int num_output_class, Rect de
             String info;
             for(int i = 0; i < num_output_class; i++)
             {
-                detections_rect.x = detections[i*6+2];
-                detections_rect.y = detections[i*6+3];
-                detections_rect.width = detections[i*6+4];
-                detections_rect.height = detections[i*6+5];
-                if(detections[i*6+0] == 0) // person
-                    rectangle(frame, detections_rect, CV_RGB(255, 0, 0), 4, 8, 0);
-                else if(detections[i*6+0] == 62 || detections[i*6+0] == 63) // tvmonitor && laptop
-                    rectangle(frame, detections_rect, CV_RGB(0, 0, 255), 4, 8, 0);
-                else if(detections[i*6+0] == 28 || detections[i*6+0] == 56)//  suitcase && chair
-                    rectangle(frame, detections_rect, CV_RGB(0, 255, 0), 4, 8, 0);
-                else
-                    rectangle(frame, detections_rect, CV_RGB(0, 0, 0), 4, 8, 0);
-                info = "cls:"+ to_string(int(detections[i*6+0])) +", conf:"+ to_string((int)round(detections[i*6+1]*100)) +"%";
-                putText(frame, info, Point(detections_rect.x, detections_rect.y-10), FONT_HERSHEY_SIMPLEX, 1, Scalar(0,255,0), 2, 8);
+                for(int j = 0; j < target_class_index_list.size(); j++)
+                {
+                    if(detections[i*6+0] == target_class_index_list[j])
+                    {
+                        detections_rect.x = detections[i*6+2];
+                        detections_rect.y = detections[i*6+3];
+                        detections_rect.width = detections[i*6+4];
+                        detections_rect.height = detections[i*6+5];
+                        if(detections[i*6+0] == 0) // person
+                            rectangle(frame, detections_rect, CV_RGB(255, 0, 0), 4, 8, 0);
+                        else if(detections[i*6+0] == 62 || detections[i*6+0] == 63) // tvmonitor && laptop
+                            rectangle(frame, detections_rect, CV_RGB(0, 0, 255), 4, 8, 0);
+                        else if(detections[i*6+0] == 28 || detections[i*6+0] == 56)//  suitcase && chair
+                            rectangle(frame, detections_rect, CV_RGB(0, 255, 0), 4, 8, 0);
+                        else
+                            rectangle(frame, detections_rect, CV_RGB(0, 0, 0), 4, 8, 0);
+                        info = "cls:"+ to_string(int(detections[i*6+0])) +", conf:"+ to_string((int)round(detections[i*6+1]*100)) +"%";
+                        putText(frame, info, Point(detections_rect.x, detections_rect.y-10), FONT_HERSHEY_SIMPLEX, 1, Scalar(0,255,0), 2, 8);
+                    }
+                }
             }
         }
         namedWindow("detections", cv::WINDOW_AUTOSIZE);
@@ -140,20 +147,25 @@ void show_detections(Mat frame, float* detections, int num_output_class, Rect de
 
 int main(int argc, char** argv)
 {
+    vector<int> target_class_index_list;
+    int num_target;
     cout.setf(std::ios::left);
     if (argc < 6)
     {
         cout << "Usage: " << endl << "$ "
-        << argv[0] << " cfg_path weight_path thresh webcam_index cap_cls_idx" << endl
+        << argv[0] << " cfg_path weight_path thresh webcam_index target_class_index1 [index2] [index3] [...]" << endl
         << endl;
         return -1;
     }
+    else
+        num_target = argc - 5;
     // ====== init ======
     char *cfgfile = argv[1];
     char *weightfile = argv[2];
     float thresh = atof(argv[3]);
     VideoCapture cap = VideoCapture(atoi(argv[4]));// init camera
-    int  target_class_index = atoi(argv[5]);
+    for(int i = 0; i < num_target; i++)
+        target_class_index_list.push_back(atoi(argv[5+i]));
     float hier_thresh = 0.5;
     int num_output_class = 0;
     double time_consumed = 0;
@@ -162,9 +174,9 @@ int main(int argc, char** argv)
     Rect detections_rect;
 
 
-    bool is_detect_in_thread = true;
-    bool is_show_image = false; // shut down for more stable detection when is_detect_in_thread==true
-    bool is_show_detections = false;
+    bool is_detect_in_thread = false;
+    bool is_show_image = true; // shut down for more stable detection when is_detect_in_thread==true
+    bool is_show_detections = true;
 
 
     detector_init(cfgfile, weightfile);
@@ -187,7 +199,7 @@ int main(int argc, char** argv)
         if(!is_detect_in_thread)
         {
             cout << endl << "------ detect begin ------" << endl;
-            detect_mat(frame, detections, &num_output_class, &time_consumed, thresh, hier_thresh, target_class_index);
+            detect_mat(frame, detections, &num_output_class, &time_consumed, thresh, hier_thresh, target_class_index_list);
             cout << "time_consumed: " << (float)time_consumed 
                 << "s, frame_rate: " << 1/(float)time_consumed << " frame/s" << endl;
         }
@@ -198,20 +210,20 @@ int main(int argc, char** argv)
                 cout << "time_consumed: " << (float)time_consumed 
                      << "s, frame_rate: " << 1/(float)time_consumed << " frame/s" << endl;
                 cout << endl << "------ detect begin ------" << endl;
-                thread t(detect_mat, frame, detections, &num_output_class, &time_consumed, thresh, hier_thresh, target_class_index);
+                thread t(detect_mat, frame, detections, &num_output_class, &time_consumed, thresh, hier_thresh, target_class_index_list);
                 t.detach();
                 time_consumed = -1;
             }
         }
         
         // ------ do something if target detected ------
-        if(is_target_detected(detections, num_output_class, target_class_index))
+        if(is_target_detected(detections, num_output_class, target_class_index_list))
         {
             save_img_by_time(frame);
         }
         
         // --- show detections ---
-        show_detections(frame, detections, num_output_class, detections_rect, is_show_image, is_show_detections);
+        show_detections(frame, detections, num_output_class, detections_rect, target_class_index_list, is_show_image, is_show_detections);
         if(waitKey(30) >=0)
             break;
     }
