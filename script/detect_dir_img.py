@@ -6,9 +6,9 @@ from ctypes import *
 
 
 def main(argv):
-    if len(argv) < 5:
+    if len(argv) < 6:
         print('USAGE:')
-        print('  $ python2 detect_dir_img.py ${cfg} ${weights} ${input directory} ${output directory}:')
+        print('  $ python2 detect_dir_img.py ${cfg} ${weights} ${thresh} ${input directory} ${output directory}:')
     else:
         # ====== init ======
         detector = cdll.LoadLibrary('../lib/libdetector_c.so')
@@ -16,12 +16,13 @@ def main(argv):
         detector.what_is_the_time_now.restype = c_double
         cfgfile = argv[1]
         weightfile = argv[2]
+        thresh = argv[3]
         detector.detector_init(cfgfile, weightfile)
 
         # ====== detect ======
         cv2.namedWindow("show", 0)
-        input_dir_name = argv[3]
-        output_dir_name = argv[4]
+        input_dir_name = argv[4]
+        output_dir_name = argv[5]
         for filename in os.listdir(input_dir_name):
             print('==== detect begin ====   ')
             # ====== load images from directory ======
@@ -30,7 +31,7 @@ def main(argv):
             # ====== do detect ======
             num_output_class = pointer(c_int(0))
             time = detector.what_is_the_time_now()
-            detections = detector.test_detector(img_path, c_float(0.5), c_float(0.9), num_output_class)
+            detections = detector.test_detector(img_path, c_float(float(thresh)), c_float(0.9), num_output_class)
             # ====== show detections ======
             for i in range(0, num_output_class[0]):
                 category = int(detections[i * 6 + 0])

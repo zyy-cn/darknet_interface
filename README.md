@@ -99,7 +99,7 @@ if you want to detect multi images contanted in a directory, run python demo:
 ```
 $ cd script
 $ export LD_LIBRARY_PATH=../lib:$LD_LIBRARY_PATH
-$ python2 detect_dir_img.py ${cfg} ${weights} ${input directory} ${output directory}
+$ python2 detect_dir_img.py ${cfg} ${weights} ${thresh} ${input directory} ${output directory}
 ```
 
 #### step 4. use this interface in your own programs
