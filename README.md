@@ -40,7 +40,7 @@
 ## How to use
 #### Step 1. Compile your darknet
 **Note that this interface can be used both for the [original darknet](https://github.com/pjreddie/darknet) and [AlexeyAB version](https://github.com/AlexeyAB/darknet)**, you can choose any one you like to compile.  
-Btw, I perfer to use AlexeyAB version because I think its faster than the original one, especially in Raspberry PI.  
+Btw, I perfer to use AlexeyAB version because I think its faster than the original one, especially in Raspberry PI(OpenBLAS is highly recommended!!).  
 
 If you choose to use the original darknet:
 ```
@@ -94,7 +94,13 @@ $ cd bin
 $ export LD_LIBRARY_PATH=../lib:$LD_LIBRARY_PATH
 $ ./demo ${detect_type} ${cfg} ${weights} ${thresh} ${image_path|video_path|webcam_index}
 in which ${detect_type} can be 'image', 'video' or 'webcam'
+
 ```
+AI camera is also supplied, you can view more usage detail by runing
+```
+$ ./AI_camera
+```
+
 if you want to detect multi images contanted in a directory, run python demo:
 ```
 $ cd script
@@ -115,6 +121,7 @@ $ python2 detect_dir_img.py ${cfg} ${weights} ${thresh} ${input directory} ${out
 
 ## TODO
 - [x] Add GPU support
+- [ ] Windows version
 - [ ] Add GUI
 - [ ] Add demo gif
 
