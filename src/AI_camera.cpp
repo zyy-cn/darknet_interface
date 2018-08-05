@@ -177,9 +177,9 @@ int main(int argc, char** argv)
     Rect detections_rect;
 
 
-    bool is_detect_in_thread = false;
-    bool is_show_image = true; // shut down for more stable detection result when is_detect_in_thread==true
-    bool is_show_detections = true;
+    bool is_detect_in_thread = true;
+    bool is_show_image = false; // shut down for more stable detection result when is_detect_in_thread==true
+    bool is_show_detections = false;
 
     detector_init(cfgfile, weightfile);
 
