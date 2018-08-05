@@ -88,15 +88,14 @@ after do this you can get "libdetector.so"(for CPP) and "libdetector_c.so"(for C
 Note that your must compile and install OPENCV(version 3.3.1 or before) firstly if you want to use it, and **macro definition "-DOPENCV" should be added** when those two shared libraries compiled by setting "IS_USE_OPENCV" to "1" in gcc.sh. If you decide to use GPU and CUDNN on step 1, **don't forget to add "-DGPU" and "-DCUDNN" correspondly** by setting "IS_USE_GPU" and "IS_USE_CUDNN" to "1", And "0" if you don't mean to.
 
 #### step 3. Run demo
-you can run c++ demo, which allow you to do detect in webcam, video or single image file, :
+you can run c++ demo, which allow you to do detect in webcam, video or single image file:
 ```
 $ cd bin
 $ export LD_LIBRARY_PATH=../lib:$LD_LIBRARY_PATH
 $ ./demo ${detect_type} ${cfg} ${weights} ${thresh} ${image_path|video_path|webcam_index}
 in which ${detect_type} can be 'image', 'video' or 'webcam'
-
 ```
-AI camera is also supplied, you can view more usage detail by runing
+AI camera is also supplied, you can view more usage detail by runing:
 ```
 $ ./AI_camera
 ```
