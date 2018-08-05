@@ -47,10 +47,10 @@ void save_img_by_time(Mat image)
     String s_day = (day<10?"0":"")+to_string(day);
     String s_hour = (hour<10?"0":"")+to_string(hour);
     String s_min= (min<10?"0":"")+to_string(min);
-    String s_sec = (sec<10?"0":"")+to_string(sec);
-    // String s_sec = (sec<10?"0":"")+to_string((int)sec);// more accurate
-    // String save_path =  "cap/"+to_string(year)+s_month+s_day+s_hour+s_min+s_sec+".jpg"; // exact to the second
-    String save_path =  "cap/"+to_string(year)+s_month+s_day+s_hour+s_min+".jpg";// exact to the minute
+    String s_sec = (sec<10?"0":"")+to_string(sec);// more accurate
+    // String s_sec = (sec<10?"0":"")+to_string((int)sec);
+    // String save_path = "cap/"+to_string(year)+s_month+s_day+"_"+s_hour+s_min+s_sec+".jpg";// exact to the second
+    String save_path = "cap/"+to_string(year)+s_month+s_day+"_"+s_hour+s_min+".jpg";// exact to the minute
     ifstream in(save_path);
     if(!in)
         imwrite(save_path, image);
@@ -178,7 +178,6 @@ int main(int argc, char** argv)
     bool is_show_image = true; // shut down for more stable detection when is_detect_in_thread==true
     bool is_show_detections = true;
 
-
     detector_init(cfgfile, weightfile);
 
     // ====== detect in webcam only ======
@@ -193,7 +192,7 @@ int main(int argc, char** argv)
     }
     Mat frame;
     detections = (float*)calloc(255*6, sizeof(float));
-    while(cap.read(frame))  
+    while(cap.read(frame))
     {
         // --- detect objects ---
         if(!is_detect_in_thread)
