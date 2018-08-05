@@ -47,10 +47,10 @@ void save_img_by_time(Mat image)
     String s_day = (day<10?"0":"")+to_string(day);
     String s_hour = (hour<10?"0":"")+to_string(hour);
     String s_min= (min<10?"0":"")+to_string(min);
-    String s_sec = (sec<10?"0":"")+to_string(sec);// more accurate
-    // String s_sec = (sec<10?"0":"")+to_string((int)sec);
-    // String save_path = "cap/"+to_string(year)+s_month+s_day+"_"+s_hour+s_min+s_sec+".jpg";// exact to the second
-    String save_path = "cap/"+to_string(year)+s_month+s_day+"_"+s_hour+s_min+".jpg";// exact to the minute
+    // String s_sec = (sec<10?"0":"")+to_string(sec);// more accurate
+    String s_sec = (sec<10?"0":"")+to_string((int)sec);
+    String save_path = "cap/"+to_string(year)+s_month+s_day+"."+s_hour+s_min+s_sec+".jpg";// exact to the second
+    // String save_path = "cap/"+to_string(year)+s_month+s_day+"."+s_hour+s_min+".jpg";// exact to the minute
     ifstream in(save_path);
     if(!in)
         imwrite(save_path, image);
@@ -155,8 +155,8 @@ int main(int argc, char** argv)
         cout << "Usage: " << endl << "  $ "
         << argv[0] << " ${cfg_path} ${weight_path} ${thresh} ${webcam_index} ${target_class_index_list}" << endl << endl
         << "${target_class_index_list} is an integer vector in which stored class index of targets you want to detected." << endl
-        << "For instance, you can detect person(0), cat(15) and dog(16) using model trained on MSCOCO(can be downloaded in https://pjreddie.com/darknet/yolo/) through camera 0 by running:" << endl << "  $ "
-        << argv[0] << " ../../darknet/cfg/yolov3.cfg ../../darknet/weights/yolov3.weights 0.5 0 0 15 16" << endl
+        << "For instance, you can detect person, cat and dog(class_id is 0, 15 and 16) using model trained on MSCOCO(can be downloaded in https://pjreddie.com/darknet/yolo/) with thresh 0.5 through camera 1 by running:" << endl << "  $ "
+        << argv[0] << " ../../darknet/cfg/yolov3.cfg ../../darknet/weights/yolov3.weights 0.5 1 0 15 16" << endl
         << endl;
         return -1;
     }
@@ -178,7 +178,7 @@ int main(int argc, char** argv)
 
 
     bool is_detect_in_thread = false;
-    bool is_show_image = true; // shut down for more stable detection when is_detect_in_thread==true
+    bool is_show_image = true; // shut down for more stable detection result when is_detect_in_thread==true
     bool is_show_detections = true;
 
     detector_init(cfgfile, weightfile);
