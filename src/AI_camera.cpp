@@ -154,10 +154,9 @@ int main(int argc, char** argv)
     {
         cout << "Usage: " << endl << "  $ "
         << argv[0] << " ${cfg_path} ${weight_path} ${thresh} ${webcam_index} ${target_class_index_list}" << endl << endl
-        << "${target_class_index_list} is an integer vector in which stored class index of targets you want to detected." << endl
-        << "For instance, you can detect person, cat and dog(class_id is 0, 15 and 16) using model trained on MSCOCO(can be downloaded in https://pjreddie.com/darknet/yolo/) with thresh 0.5 through camera 1 by running:" << endl << "  $ "
-        << argv[0] << " ../../darknet/cfg/yolov3.cfg ../../darknet/weights/yolov3.weights 0.5 1 0 15 16" << endl
-        << endl;
+        << "${target_class_index_list} is an integer vector in which class index of targets you want to detected is stored. Image captured is stored in bin/cap renamed by time." << endl
+        << "For instance, you can detect person, cat and dog(class_id is 0, 15 and 16) using model trained on MSCOCO(can be downloaded in https://pjreddie.com/darknet/yolo/) with thresh 0.5 through camera 1 by running:" << endl << endl << "  $ "
+        << argv[0] << " ../../darknet/cfg/yolov3.cfg ../../darknet/weights/yolov3.weights 0.5 1 0 15 16" << endl;
         return -1;
     }
     else
