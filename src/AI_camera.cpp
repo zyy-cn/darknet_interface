@@ -152,8 +152,11 @@ int main(int argc, char** argv)
     cout.setf(std::ios::left);
     if (argc < 6)
     {
-        cout << "Usage: " << endl << "$ "
-        << argv[0] << " cfg_path weight_path thresh webcam_index target_class_index1 [index2] [index3] [...]" << endl
+        cout << "Usage: " << endl << "  $ "
+        << argv[0] << " ${cfg_path} ${weight_path} ${thresh} ${webcam_index} ${target_class_index_list}" << endl << endl
+        << "${target_class_index_list} is an integer vector in which stored class index of targets you want to detected." << endl
+        << "For instance, you can detect person(0), cat(15) and dog(16) using model trained on MSCOCO(can be downloaded in https://pjreddie.com/darknet/yolo/) through camera 0 by running:" << endl << "  $ "
+        << argv[0] << " ../../darknet/cfg/yolov3.cfg ../../darknet/weights/yolov3.weights 0.5 0 0 15 16" << endl
         << endl;
         return -1;
     }
