@@ -93,11 +93,19 @@ you can run c++ demo, which allow you to do detect in webcam, video or single im
 $ cd bin
 $ export LD_LIBRARY_PATH=../lib:$LD_LIBRARY_PATH
 $ ./demo ${detect_type} ${cfg} ${weights} ${thresh} ${image_path|video_path|webcam_index}
-in which ${detect_type} can be 'image', 'video' or 'webcam'
 ```
-AI camera is also supplied, you can view more usage detail by runing:
+in which ${detect_type} can be 'image', 'video' or 'webcam'. For instance, you can do detect object using model trained on MSCOCO(can be downloaded in https://pjreddie.com/darknet/yolo/) with thresh 0.5 through camera 0 by running:
 ```
-$ ./AI_camera
+$ ./demo webcam ../../darknet/cfg/yolov3.cfg ../../darknet/weights/yolov3.weights 0.5 0
+```
+
+AI camera is also supplied, here is the Usage:
+```
+$ ./AI_camera ${cfg_path} ${weight_path} ${thresh} ${webcam_index} ${target_class_index_list}
+```
+${target_class_index_list} is an integer vector in which class index of targets you want to detected is stored. Image captured is stored in bin/cap renamed by time.For instance, you can detect person, cat and dog(class_id is 0, 15 and 16) using model trained on MSCOCO with thresh 0.5 through camera 1 by running:
+```
+$ ./AI_camera ../../darknet/cfg/yolov3.cfg ../../darknet/weights/yolov3.weights 0.5 1 0 15 16
 ```
 
 if you want to detect multi images contanted in a directory, run python demo:
