@@ -75,6 +75,25 @@ $ ln -s darknet.so libdarknet.so
 #### Step 2. Clone and compile this repository beside the darknet repository you just cloned
 ```
 $ git clone https://github.com/zyy-cn/darknet_interface.git darknet_interface
+```
+After do this your directory structure should be looks like this:
+```
+|-- darknet (or darknet_AlexeyAB)
+    |-- cfg
+        |-- ...
+    |-- src
+        |-- ...
+    |-- ...
+    |-- Makefile
+|-- darknet_interface
+    |-- src
+        |-- ...
+    |-- script
+        |-- ...
+    |-- README.md
+```
+go on:
+```
 $ cd darknet_interface/src
 $ chmod 777 *
 $ vim gcc.sh
@@ -99,11 +118,11 @@ in which ${detect_type} can be 'image', 'video' or 'webcam'. For instance, you c
 $ ./demo webcam ../../darknet/cfg/yolov3.cfg ../../darknet/weights/yolov3.weights 0.5 0
 ```
 
-AI camera is also supplied, here is the Usage:
+AI camera is also provided, here is the usage:
 ```
 $ ./AI_camera ${cfg_path} ${weight_path} ${thresh} ${webcam_index} ${target_class_index_list}
 ```
-${target_class_index_list} is an integer vector in which class index of targets you want to detected is stored. Image captured is stored in bin/cap renamed by time.For instance, you can detect person, cat and dog(class_id is 0, 15 and 16) using model trained on MSCOCO with thresh 0.5 through camera 1 by running:
+${target_class_index_list} is an integer vector in which class index of targets you want to detected is stored. Image captured is stored in bin/cap renamed by time. For instance, you can detect person, cat and dog(class_id is 0, 15 and 16) using model trained on MSCOCO with thresh 0.5 through camera 1 by running:
 ```
 $ ./AI_camera ../../darknet/cfg/yolov3.cfg ../../darknet/weights/yolov3.weights 0.5 1 0 15 16
 ```
@@ -124,7 +143,6 @@ $ python2 detect_dir_img.py ${cfg} ${weights} ${thresh} ${input directory} ${out
     - view "demo.cpp" and "gcc.sh" for more details.
 - in python:
     - view "detect_dir_img.py" for more details
-
 
 ## TODO
 - [x] Add GPU support
