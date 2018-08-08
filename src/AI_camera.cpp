@@ -211,7 +211,7 @@ int main(int argc, char** argv)
                 cout << "time_consumed: " << (float)time_consumed 
                      << "s, frame_rate: " << 1/(float)time_consumed << " frame/s" << endl;
                 cout << endl << "------ detect begin ------" << endl;
-                thread t(detect_mat, frame, detections, &num_output_class, &time_consumed, thresh, hier_thresh, target_class_index_list);
+                thread t(detect_mat, frame.clone(), detections, &num_output_class, &time_consumed, thresh, hier_thresh, target_class_index_list);
                 t.detach();
                 time_consumed = -1;
             }

@@ -103,7 +103,7 @@ int main(int argc, char** argv)
 
 
     bool is_detect_in_thread = true;
-    bool is_show_image = true; // shut down for more stable detection when is_detect_in_thread==true
+    bool is_show_image = true;
     bool is_show_detections = true;
 
 
