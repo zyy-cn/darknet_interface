@@ -102,7 +102,7 @@ int main(int argc, char** argv)
     Rect detections_rect;
 
 
-    bool is_detect_in_thread = false;
+    bool is_detect_in_thread = true;
     bool is_show_image = true; // shut down for more stable detection when is_detect_in_thread==true
     bool is_show_detections = true;
 
@@ -177,7 +177,7 @@ int main(int argc, char** argv)
                 cout << "time_consumed: " << (float)time_consumed 
                      << "s, frame_rate: " << 1/(float)time_consumed << " frame/s" << endl;
                 cout << endl << "------ detect begin ------" << endl;
-                thread t(detect_mat, frame, detections, &num_output_class, &time_consumed, thresh, hier_thresh);
+                thread t(detect_mat, frame.clone(), detections, &num_output_class, &time_consumed, thresh, hier_thresh);
                 t.detach();
                 time_consumed = -1;
             }
