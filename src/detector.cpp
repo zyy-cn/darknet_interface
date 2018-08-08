@@ -99,7 +99,7 @@ float* detect(image im, float thresh, float hier_thresh, int* result_num)
 }
 
 
-float* test_detector(char *filename, float thresh, float hier_thresh, int* num_output_class)
+float* test_detector_file(char *filename, float thresh, float hier_thresh, int* num_output_class)
 {
     char buff[256];
     char *input = buff;
@@ -118,41 +118,16 @@ float* test_detector(char *filename, float thresh, float hier_thresh, int* num_o
     return detect(im, thresh, hier_thresh, num_output_class);
 }
 
-
-#ifdef OPENCV
-void ipl_into_image(IplImage* src, image im)
+float* test_detector_uchar(unsigned char *data, int w, int h, int c, float thresh, float hier_thresh, int* num_output_class)
 {
-    unsigned char *data = (unsigned char *)src->imageData;
-    int h = src->height;
-    int w = src->width;
-    int c = src->nChannels;
-    int step = src->widthStep;
+    image im = make_image(w, h, c);
+    // bbb...bbbggg...gggrrr...rrr
     int i, j, k;
-
-    for(i = 0; i < h; ++i){
-        for(k= 0; k < c; ++k){
-            for(j = 0; j < w; ++j){
-                im.data[k*w*h + i*w + j] = data[i*step + j*c + k]/255.;
-            }
-        }
-    }
+    for(i = 0; i < h; ++i)
+        for(k= 0; k < c; ++k)
+            for(j = 0; j < w; ++j)
+                // im.data[k*w*h + i*w + j] = data[i*step + j*c + k]/255.;
+                im.data[k*w*h + i*w + j] = data[i*c*w + j*c + k]/255.;
+    return detect(im, thresh, hier_thresh, num_output_class);
 }
-
-image ipl_to_image(IplImage* src)
-{
-    int h = src->height;
-    int w = src->width;
-    int c = src->nChannels;
-    image out = make_image(w, h, c);
-    ipl_into_image(src, out);
-    return out;
-}
-
-float* test_detector_cv(IplImage* im, float thresh, float hier_thresh, int* num_output_class)
-{
-    return detect(ipl_to_image(im), thresh, hier_thresh, num_output_class);
-}
-#endif
-
-
 

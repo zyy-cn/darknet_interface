@@ -5,7 +5,6 @@
 #include <iostream>
 
 #ifdef OPENCV
-#include "opencv2/core/types_c.h"
 #include <opencv2/highgui/highgui.hpp>  
 #include <opencv2/imgproc/imgproc.hpp>  
 #include <opencv2/core/core.hpp> 
@@ -19,10 +18,13 @@ using namespace cv;
 void detect_mat(Mat frame_detect, float* detections_output, int* num_output_class, double* time_consumed, float thresh, float hier_thresh)
 {
     double time = what_is_the_time_now();
-    IplImage input = IplImage(frame_detect);// convert image format from mat to iplimage
 
-    // do detect in an iplimage converted from mat
-    float* detections = test_detector_cv(&input, thresh, hier_thresh, num_output_class);
+    // do detect in an unsigned char* data buffer getted from Mat::data or IplImage.imageData
+    unsigned char* data = (unsigned char*)frame_detect.data;
+    int w = frame_detect.cols;
+    int h = frame_detect.rows;
+    int c = frame_detect.channels();
+    float* detections = test_detector_uchar(data, w, h, c, thresh, hier_thresh, num_output_class);
     for(int i = 0; i < *num_output_class; i++)
     {
         cout.width(2), cout << (int)detections[i*6+0] << ": ";
@@ -118,7 +120,7 @@ int main(int argc, char** argv)
         for(int i = 0; i < 10; i++)
         {
             time = what_is_the_time_now();
-            detections = test_detector(image_path, thresh, hier_thresh, &num_output_class);
+            detections = test_detector_file(image_path, thresh, hier_thresh, &num_output_class);
             cout << "Predicted in " << what_is_the_time_now() - time << " seconds." << endl;
             cout << "num_output_class:" << num_output_class << endl;
             for(int i = 0; i < num_output_class; i++)
