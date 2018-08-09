@@ -26,7 +26,7 @@
     - width of bbox
     - height of bbox
 
-#### float* test_detector_data_uchar(unsigned char* data, int w, int h, int c, float thresh, float hier_thresh, int* num_output_class);
+#### float* test_detector_uchar(unsigned char* data, int w, int h, int c, float thresh, float hier_thresh, int* num_output_class);
 - brief:        detect objects in an image data buffer
 - param[in1]:   a pointer to the image data buffer. In such buffer an image was arranged as bgrbgr...bgr by rows (the same as cv::Mat::data or IplImage.imageData) with format unsigned char.
 - param[in2]:   width of image
@@ -152,14 +152,14 @@ $ python2 detect_dir_img.py ${cfg} ${weights} ${thresh} ${input directory} ${out
     - **make sure your "libdarknet.so" is compiled with GPU and CUDNN in step 1 before add "-DGPU" and "-DCUDNN" when your program compiled**;
     - view "demo.cpp" and "gcc.sh" for more details.
 - in python:
-    - 
-    - view "detect_dir_img.py" for more details
+    - view "demo.py" and "detect_dir_img.py" for more details
 
 ## TODO
 - [x] Add GPU support
+- [x] python interface for video and webcam detection
+- [x] Add demo gif
 - [ ] Windows version
 - [ ] Add GUI
-- [x] Add demo gif
 
 ## License
 This project is released under the [WTFPL LICENSE](http://www.wtfpl.net/).
