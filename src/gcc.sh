@@ -12,9 +12,6 @@ OPENCV_LIB_PATH=/home/m/local_install/lib
 #OPENCV_INCLUDE_PATH=/usr/local/include
 #OPENCV_LIB_PATH=/usr/local/lib
 
-
-
-
 # ====== compile libraries and demo program automaticly and DO NOT make any change if not necessary ======
 echo 'prepare to build...'
 
@@ -70,9 +67,9 @@ ln -s detector$DARKNET_SUFFIX.cpp detector.c
 
 # compile shared libraries
 echo 'building libdetector.so...'
-$CXX -fPIC -shared -O3 -o $DETECTOR_LIB_PATH/libdetector.so detector$DARKNET_SUFFIX.cpp -I. -I$DARKNET_INCLUDE_PATH -I$DARKNET_SRC_PATH -I$CUDA_PATH/include -L$DARKNET_LIB_PATH -L$CUDA_PATH/lib64 -ldarknet -fopenmp -lgomp $CFLAGS $OPENCV
+$CXX -fPIC -shared -O3 -o $DETECTOR_LIB_PATH/libdetector.so detector$DARKNET_SUFFIX.cpp -I. -I$DARKNET_INCLUDE_PATH -I$DARKNET_SRC_PATH -I$CUDA_PATH/include -L$DARKNET_LIB_PATH -L$CUDA_PATH/lib64 -ldarknet -fopenmp -lgomp $CFLAGS
 echo 'building libdetector_c.so...'
-$CC -fPIC -shared -O3 -o $DETECTOR_LIB_PATH/libdetector_c.so detector.c -I. -I$DARKNET_INCLUDE_PATH -I$DARKNET_SRC_PATH -I$CUDA_PATH/include -L$DARKNET_LIB_PATH -L$CUDA_PATH/lib64 -ldarknet -fopenmp -lgomp $CFLAGS $OPENCV
+$CC -fPIC -shared -O3 -o $DETECTOR_LIB_PATH/libdetector_c.so detector.c -I. -I$DARKNET_INCLUDE_PATH -I$DARKNET_SRC_PATH -I$CUDA_PATH/include -L$DARKNET_LIB_PATH -L$CUDA_PATH/lib64 -ldarknet -fopenmp -lgomp $CFLAGS
 
 # compile demo
 echo 'compiling demo...'

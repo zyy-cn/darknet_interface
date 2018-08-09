@@ -3,6 +3,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <iostream>
+#include <cstring>
+using namespace std;
 
 #ifdef OPENCV
 #include <opencv2/highgui/highgui.hpp>  
@@ -12,7 +14,6 @@
 
 int FRAME_WINDOW_WIDTH = 320;
 int FRAME_WINDOW_HEIGHT = 240;
-using namespace std;
 using namespace cv;
 
 void detect_mat(Mat frame_detect, float* detections_output, int* num_output_class, double* time_consumed, float thresh, float hier_thresh)
@@ -99,12 +100,14 @@ int main(int argc, char** argv)
     float hier_thresh = 0.5;
     int num_output_class = 0;
     double time_consumed = 0;
-    VideoCapture cap;
     float *detections;
+#ifdef OPENCV
+    VideoCapture cap;
     Rect detections_rect;
+#endif
 
 
-    bool is_detect_in_thread = true;
+    bool is_detect_in_thread = false;
     bool is_show_image = true;
     bool is_show_detections = true;
 
@@ -126,21 +129,24 @@ int main(int argc, char** argv)
             for(int i = 0; i < num_output_class; i++)
             {
                 cout.width(2), cout << (int)detections[i*6+0] << ": ";
-                cout.width(5), cout << to_string((int)(round(detections[i*6+1]*100)))+"%";
-                cout.width(12),cout << "(left_x: "+to_string((int)round(detections[i*6+2]));
-                cout.width(12),cout << "  top_y: "+to_string((int)round(detections[i*6+3]));
-                cout.width(12),cout << "  width: "+to_string((int)round(detections[i*6+4]));
-                cout.width(13),cout << "  height: "+to_string((int)round(detections[i*6+5])) << ")" << endl;
+                cout.width(5), cout << to_string((int)((detections[i*6+1]*100)))+"%";
+                cout.width(12),cout << "(left_x: "+to_string((int)(detections[i*6+2]));
+                cout.width(12),cout << "  top_y: "+to_string((int)(detections[i*6+3]));
+                cout.width(12),cout << "  width: "+to_string((int)(detections[i*6+4]));
+                cout.width(13),cout << "  height: "+to_string((int)(detections[i*6+5])) << ")" << endl;
             }
 #ifdef OPENCV
             // show detections using opencv
             show_detection(imread(image_path), detections, num_output_class, 
                             detections_rect, is_show_image, is_show_detections);
+#else
+            cout << "compile with OpenCV to show detections" << endl << endl;
 #endif
         }
         return 0;
     }
     // ====== detect in video or webcam ======
+#ifdef OPENCV
     else if(0==strcmp(type, "video"))
     {
         cout << "detect video" << endl;
@@ -151,10 +157,6 @@ int main(int argc, char** argv)
         cout << "detect webcam" << endl;
         cap = VideoCapture(atoi(argv[5]));// init camera
     }
-#ifndef OPENCV
-    cout << "need OpenCV!" << endl;
-    return -1;
-#endif
     if(!cap.isOpened())
     {
         cout << "No video stream captured!" << endl;
@@ -190,6 +192,10 @@ int main(int argc, char** argv)
         if(waitKey(30) >=0)
             break;
     }
+#else
+    else
+        cout << "need OpenCV!" << endl;
+#endif
 
     // ====== uninit ======
     detector_uninit();

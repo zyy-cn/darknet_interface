@@ -3,8 +3,6 @@ import sys
 import cv2
 from ctypes import *
 
-
-
 def main(argv):
     if len(argv) < 6:
         print('USAGE:')
@@ -12,7 +10,7 @@ def main(argv):
     else:
         # ====== init ======
         detector = cdll.LoadLibrary('../lib/libdetector_c.so')
-        detector.test_detector.restype = POINTER(c_float)
+        detector.test_detector_file.restype = POINTER(c_float)
         detector.what_is_the_time_now.restype = c_double
         cfgfile = argv[1]
         weightfile = argv[2]
@@ -31,7 +29,7 @@ def main(argv):
             # ====== do detect ======
             num_output_class = pointer(c_int(0))
             time = detector.what_is_the_time_now()
-            detections = detector.test_detector(img_path, c_float(float(thresh)), c_float(0.9), num_output_class)
+            detections = detector.test_detector_file(img_path, c_float(float(thresh)), c_float(0.9), num_output_class)
             # ====== show detections ======
             for i in range(0, num_output_class[0]):
                 category = int(detections[i * 6 + 0])

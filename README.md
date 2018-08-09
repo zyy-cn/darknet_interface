@@ -12,7 +12,7 @@
 - param[in2]:   path to the network pretrained weight file
 - retval:       void
 
-#### float* test_detector(char *filename, float thresh, float hier_thresh, int* num_output_class)
+#### float* test_detector_file(char *filename, float thresh, float hier_thresh, int* num_output_class)
 - brief:        detect objects in a specific image file.
 - param[in1]:   path to the image file which want to be detected
 - param[in2]:   detect thresh
@@ -26,11 +26,14 @@
     - width of bbox
     - height of bbox
 
-#### float* test_detector_cv(IplImage* im, float thresh, float hier_thresh, int* num_output_class);
-- brief:        detect objects in an IplImage encoded by OpenCV.
-- param[in1]:   an IplImage which want to be detected
-- param[in2~4]: the same as "test_detector" described before
-- retval:       the same as "test_detector" described before
+#### float* test_detector_data_uchar(unsigned char* data, int w, int h, int c, float thresh, float hier_thresh, int* num_output_class);
+- brief:        detect objects in an image data buffer
+- param[in1]:   a pointer to the image data buffer. In such buffer an image was arranged as bgrbgr...bgr by rows (the same as cv::Mat::data or IplImage.imageData) with format unsigned char.
+- param[in2]:   width of image
+- param[in3]:   height of image
+- param[in4]:   channels of image
+- param[in5~7]: the same as "test_detector_file" described before
+- retval:       the same as "test_detector_file" described before
 
 #### void detector_uninit()
 - brief:        free memory when all detect task finished.
@@ -107,7 +110,7 @@ $ ./gcc.sh
 $ cd ..
 ```
 after do this you can get "libdetector.so"(for CPP) and "libdetector_c.so"(for C) in darknet_interface/lib.   
-Note that your must compile and install OPENCV(version 3.3.1 or before) firstly if you want to use it, and **macro definition "-DOPENCV" should be added** when those two shared libraries compiled by setting "IS_USE_OPENCV" to "1" in gcc.sh. If you decide to use GPU and CUDNN on step 1, **don't forget to add "-DGPU" and "-DCUDNN" correspondly** by setting "IS_USE_GPU" and "IS_USE_CUDNN" to "1", And "0" if you don't mean to.
+Note that your must compile and install OPENCV(version 3.3.1 or before) firstly if you want to use it, and **macro definition "-DOPENCV" should be added** by setting "IS_USE_OPENCV" to "1" in gcc.sh. If you decide to use GPU and CUDNN on step 1, **don't forget to add "-DGPU" and "-DCUDNN" correspondly** by setting "IS_USE_GPU" and "IS_USE_CUDNN" to "1", And "0" if you don't mean to.
 
 #### step 3. Run demo
 you can run c++ demo, which allow you to do detect in webcam, video or single image file:
@@ -130,10 +133,14 @@ ${target_class_index_list} is an integer vector in which class index of targets 
 $ ./AI_camera ../../darknet/cfg/yolov3.cfg ../../darknet/weights/yolov3.weights 0.5 1 0 15 16
 ```
 
-if you want to detect multi images contanted in a directory, run python demo:
+you can also run python demo which is similar to its c++ counterpart:
 ```
 $ cd script
 $ export LD_LIBRARY_PATH=../lib:$LD_LIBRARY_PATH
+$ python2 demo.py ${detect_type} ${cfg} ${weights} ${thresh} ${video_path|webcam_index}
+```
+in which ${detect_type} can be 'video' or 'webcam'. If you want to detect multi images contanted in a directory:
+```
 $ python2 detect_dir_img.py ${cfg} ${weights} ${thresh} ${input directory} ${output directory}
 ```
 
@@ -145,6 +152,7 @@ $ python2 detect_dir_img.py ${cfg} ${weights} ${thresh} ${input directory} ${out
     - **make sure your "libdarknet.so" is compiled with GPU and CUDNN in step 1 before add "-DGPU" and "-DCUDNN" when your program compiled**;
     - view "demo.cpp" and "gcc.sh" for more details.
 - in python:
+    - 
     - view "detect_dir_img.py" for more details
 
 ## TODO

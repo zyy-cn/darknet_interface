@@ -6,6 +6,8 @@
 #include <time.h>
 #include <fstream>
 #include <vector>
+#include <cstring>
+using namespace std;
 
 #ifdef OPENCV
 #include <opencv2/highgui/highgui.hpp>  
@@ -15,7 +17,6 @@
 
 int FRAME_WINDOW_WIDTH = 320;
 int FRAME_WINDOW_HEIGHT = 240;
-using namespace std;
 using namespace cv;
 
 void get_Beijing_time(int* year, int* month, int* day, int* hour, int* min, double* sec)
@@ -98,11 +99,11 @@ void detect_mat(Mat frame_detect, float* detections_output, int* num_output_clas
         detections_output[i*6+4] = detections[i*6+4];// ith detection's width of bbox
         detections_output[i*6+5] = detections[i*6+5];// ith detection's height of bbox
     }
-    // --- do something ---
+    // ------ do something if target detected ------
     print_detections(detections, *num_output_class);
-    // if(is_target_detected(detections_output, * num_output_class, target_class_index_list))
+    if(is_target_detected(detections_output, * num_output_class, target_class_index_list))
     {
-        // save_img_by_time(frame_detect);
+        save_img_by_time(frame_detect);
     }
 
     if(time_consumed)
@@ -162,7 +163,8 @@ int main(int argc, char** argv)
         return -1;
     }
     else
-        num_target = argc - 5;
+#ifdef OPENCV
+    num_target = argc - 5;
     // ====== init ======
     char *cfgfile = argv[1];
     char *weightfile = argv[2];
@@ -179,16 +181,12 @@ int main(int argc, char** argv)
 
 
     bool is_detect_in_thread = true;
-    bool is_show_image = false; // shut down for more stable detection result when is_detect_in_thread==true
-    bool is_show_detections = false;
+    bool is_show_image = true;
+    bool is_show_detections = true;
 
     detector_init(cfgfile, weightfile);
 
     // ====== detect in webcam only ======
-#ifndef OPENCV
-    cout << "need OpenCV!" << endl;
-    return -1;
-#endif
     if(!cap.isOpened())
     {
         cout << "No video stream captured!" << endl;
@@ -220,19 +218,21 @@ int main(int argc, char** argv)
         }
         
         // ------ do something if target detected ------
-        if(is_target_detected(detections, num_output_class, target_class_index_list))
-        {
-            save_img_by_time(frame);
-        }
+        // if(is_target_detected(detections, num_output_class, target_class_index_list))
+        // {
+        //     save_img_by_time(frame);
+        // }
         
         // --- show detections ---
         show_detections(frame, detections, num_output_class, detections_rect, target_class_index_list, is_show_image, is_show_detections);
         if(waitKey(30) >=0)
             break;
     }
-
     // ====== uninit ======
     detector_uninit();
+#else
+    cout << "need OpenCV!" << endl;
+#endif
 
     return 0;
 }
