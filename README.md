@@ -44,7 +44,7 @@
 - retval:       an double representing the current time(In seconds)
 
 ## How to use
-#### Step 1. Compile your darknet
+### Step 1. Compile your darknet
 **Note that this interface can be used both for the [original darknet](https://github.com/pjreddie/darknet) and [AlexeyAB version](https://github.com/AlexeyAB/darknet)**, you can choose any one you like to compile.  
 Btw, I perfer to use AlexeyAB version because I think its faster than the original one, especially in Raspberry PI(OpenBLAS is highly recommended!!).  
 
@@ -78,7 +78,7 @@ or
 $ ln -s darknet.so libdarknet.so
 ```
 
-#### Step 2. Clone and compile this repository beside the darknet repository you just cloned
+### Step 2. Clone and compile this repository beside the darknet repository you just cloned
 ```
 $ git clone https://github.com/zyy-cn/darknet_interface.git darknet_interface
 ```
@@ -112,7 +112,7 @@ $ cd ..
 after do this you can get "libdetector.so"(for CPP) and "libdetector_c.so"(for C) in darknet_interface/lib.   
 Note that your must compile and install OPENCV(version 3.3.1 or before) firstly if you want to use it, and **macro definition "-DOPENCV" should be added** by setting "IS_USE_OPENCV" to "1" in gcc.sh. If you decide to use GPU and CUDNN on step 1, **don't forget to add "-DGPU" and "-DCUDNN" correspondly** by setting "IS_USE_GPU" and "IS_USE_CUDNN" to "1", And "0" if you don't mean to.
 
-#### step 3. Run demo
+### step 3. Run demo
 you can run c++ demo, which allow you to do detect in webcam, video or single image file:
 ```
 $ cd bin
@@ -137,14 +137,14 @@ you can also run python demo which is similar to its c++ counterpart:
 ```
 $ cd script
 $ export LD_LIBRARY_PATH=../lib:$LD_LIBRARY_PATH
-$ python2 demo.py ${detect_type} ${cfg} ${weights} ${thresh} ${video_path|webcam_index}
+$ python demo.py ${detect_type} ${cfg} ${weights} ${thresh} ${video_path|webcam_index}
 ```
 in which ${detect_type} can be 'video' or 'webcam'. If you want to detect multi images contanted in a directory:
 ```
-$ python2 detect_dir_img.py ${cfg} ${weights} ${thresh} ${input directory} ${output directory}
+$ python detect_dir_img.py ${cfg} ${weights} ${thresh} ${input directory} ${output directory}
 ```
 
-#### step 4. use this interface in your own programs
+### step 4. use this interface in your own programs
 - in C/CPP:
     - include "detector.h";
     - link with "libdarknet.so", "libdetector.so"(or "libdetector_c.so") compiled in step 1 and 2;
