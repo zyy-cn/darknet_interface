@@ -19,7 +19,7 @@ def main(argv):
         cfgfile = argv[2]
         weightfile = argv[3]
         thresh = argv[4]
-        detector.detector_init(cfgfile, weightfile)
+        detector.detector_init(cfgfile.encode('ascii'), weightfile.encode('ascii'))
         if(argv[1] == 'video'):
             cap = cv2.VideoCapture(argv[5])
         elif(argv[1] == 'webcam'):

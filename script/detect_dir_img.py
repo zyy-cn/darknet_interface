@@ -15,7 +15,7 @@ def main(argv):
         cfgfile = argv[1]
         weightfile = argv[2]
         thresh = argv[3]
-        detector.detector_init(cfgfile, weightfile)
+        detector.detector_init(cfgfile.encode('ascii'), weightfile.encode('ascii'))
 
         # ====== detect ======
         cv2.namedWindow("show", 0)
@@ -29,7 +29,7 @@ def main(argv):
             # ====== do detect ======
             num_output_class = pointer(c_int(0))
             time = detector.what_is_the_time_now()
-            detections = detector.test_detector_file(img_path, c_float(float(thresh)), c_float(0.9), num_output_class)
+            detections = detector.test_detector_file(img_path.encode('ascii'), c_float(float(thresh)), c_float(0.9), num_output_class)
             # ====== show detections ======
             for i in range(0, num_output_class[0]):
                 category = int(detections[i * 6 + 0])
