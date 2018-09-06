@@ -118,7 +118,7 @@ $ cd bin
 $ export LD_LIBRARY_PATH=../lib:$LD_LIBRARY_PATH
 $ ./demo ${detect_type} ${cfg} ${weights} ${thresh} ${image_path|video_path|webcam_index}
 ```
-in which ${detect_type} can be 'image', 'video' or 'webcam'. For instance, you can do detect object using model trained on MSCOCO(can be downloaded in https://pjreddie.com/darknet/yolo/) with thresh 0.5 through camera 0 by running:
+in which ${detect_type} can be 'image', 'video' or 'webcam'. For instance, you can do detect object using model trained on MSCOCO(can be downloaded [here](https://pjreddie.com/darknet/yolo/)) with thresh 0.5 through camera 0 by running:
 ```
 $ ./demo webcam ../../darknet/cfg/yolov3.cfg ../../darknet/weights/yolov3.weights 0.5 0
 ```
@@ -152,16 +152,6 @@ $ python detect_dir_img.py ${cfg} ${weights} ${thresh} ${input directory} ${outp
     - view "demo.cpp" and "gcc.sh" for more details.
 - in python:
     - view "demo.py" and "detect_dir_img.py" for more details
-
-## TODO
-- [x] Add GPU support
-- [x] python interface for video and webcam detection
-- [x] Add demo gif
-- [ ] Windows version
-- [ ] Add GUI
-
-## License
-This project is released under the [WTFPL LICENSE](http://www.wtfpl.net/).
 
 ## Darknet 接口
 [本项目](https://github.com/zyy-cn/darknet_interface) 是一个用于darknet的接口, 可以让你在你自己的程序中（C，C++，Python等）通过链接“libdarknet.so”和“libdetector.so”这两个库，就可以使用darknet检测器来做一些很酷的事情（比如在你的个人电脑，树莓派，英伟达TX1等设备上运行YOLO目标检测算法）。
@@ -283,7 +273,7 @@ $ cd bin
 $ export LD_LIBRARY_PATH=../lib:$LD_LIBRARY_PATH
 $ ./demo ${detect_type} ${cfg} ${weights} ${thresh} ${image_path|video_path|webcam_index}
 ```
-其中${detect_type}可以是'image','video'或'webcam'。举个例子，你可以用在MSCOCO上预训练好的模型(从https://pjreddie.com/darknet/yolo/可以下载到)以阈值0.5在摄像头0的画面里进行目标检测，命令如下：
+其中${detect_type}可以是'image','video'或'webcam'。举个例子，你可以用在MSCOCO上预训练好的模型(从[这里](https://pjreddie.com/darknet/yolo/)可以下载到)以阈值0.5在摄像头0的画面里进行目标检测，命令如下：
 ```
 $ ./demo webcam ../../darknet/cfg/yolov3.cfg ../../darknet/weights/yolov3.weights 0.5 0
 ```
@@ -317,3 +307,13 @@ $ python detect_dir_img.py ${cfg} ${weights} ${thresh} ${input directory} ${outp
     - 更多细节请查看“demo.cpp”和“gcc.sh”。
 - 在python中:
     - 更多细节请查看“demo.py”和“detect_dir_img.py”。
+
+## TODO
+- [x] Add GPU support
+- [x] python interface for video and webcam detection
+- [x] Add demo gif
+- [ ] Windows version
+- [ ] Add GUI
+
+## License
+This project is released under the [WTFPL LICENSE](http://www.wtfpl.net/).
