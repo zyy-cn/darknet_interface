@@ -62,7 +62,7 @@ float* detect(image im, float thresh, float hier_thresh, int* num_output_class)
 {
     float nms=.45;	// 0.4F
     int letterbox = 0;
-    image sized = letterbox_image(im, net.w, net.h); letterbox = 1;
+    image sized = resize_image(im, net.w, net.h);
     layer l = net.layers[net.n-1];
 
     float *X = sized.data;
