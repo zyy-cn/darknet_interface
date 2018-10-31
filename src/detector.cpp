@@ -121,13 +121,16 @@ float* test_detector_file(char *filename, float thresh, float hier_thresh, int* 
 float* test_detector_uchar(unsigned char *data, int w, int h, int c, float thresh, float hier_thresh, int* num_output_class)
 {
     image im = make_image(w, h, c);
-    // bbb...bbbggg...gggrrr...rrr
-    int i, j, k;
-    for(i = 0; i < h; ++i)
-        for(k= 0; k < c; ++k)
-            for(j = 0; j < w; ++j)
-                // im.data[k*w*h + i*w + j] = data[i*step + j*c + k]/255.;
-                im.data[k*w*h + i*w + j] = data[i*c*w + j*c + k]/255.;
+    //OPENCV IMAGE FORMAT: BGR BGR BGR BGR...
+    //DARKNET IMAGE FORMAT :RRRRR ... GGGGG... BBBBB...
+    int x, y, ch;
+
+    for(ch = 0; ch < c; ch++)
+        for(y = 0; y < h; y++)
+            for(x = 0; x < w; x++)
+            {
+                im.data[ch*w*h + y*w + x] = data[(y*w + x)*(c) + (c - 1 - ch)] / 255.;
+            }
     return detect(im, thresh, hier_thresh, num_output_class);
 }
 
