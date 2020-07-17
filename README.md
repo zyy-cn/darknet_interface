@@ -128,11 +128,11 @@ $ ./demo webcam ../../darknet/cfg/yolov3.cfg ../../darknet/weights/yolov3.weight
 
 AI camera is also provided, here is the usage:
 ```
-$ ./AI_camera ${cfg_path} ${weight_path} ${thresh} ${webcam_index} ${target_class_index_list}
+$ ./AI_camera ${cfg_path} ${weight_path} ${thresh} ${capture_interval} ${webcam_index} ${target_class_index_list}
 ```
-${target_class_index_list} is an integer vector in which class index of targets you want to detected is stored. Image captured is stored in bin/cap renamed by time. For instance, you can detect person, cat and dog(class_id is 0, 15 and 16) using model trained on MSCOCO with thresh 0.5 through camera 1 by running:
+${target_class_index_list} is an integer vector in which class index of targets you want to detected is stored. Captured image is stored in bin/cap renamed by time. For instance, you can detect person, cat and dog(class_id is 0, 15 and 16) using model trained on MSCOCO with thresh 0.5 and capture interval 10s through camera 1 by running:
 ```
-$ ./AI_camera ../../darknet/cfg/yolov3.cfg ../../darknet/weights/yolov3.weights 0.5 1 0 15 16
+$ ./AI_camera ../../darknet/cfg/yolov3.cfg ../../darknet/weights/yolov3.weights 0.5 10 1 0 15 16
 ```
 
 you can also run python demo which is similar to its c++ counterpart:
@@ -289,9 +289,9 @@ AI相机也提供了，用法为:
 ```
 $ ./AI_camera ${cfg_path} ${weight_path} ${thresh} ${webcam_index} ${target_class_index_list}
 ```
-其中${target_class_index_list}是一个整型数组，其中存的是你想要检测的类的类别号。拍摄下来的图像以拍摄时间为文件名，依次存储在bin/cap文件夹中。比如，你可以用在MSCOCO上预训练好的模型，在摄像头1的画面中，以阈值0.5对人、猫和狗这三个类别（类别号分别是0，15，16）进行抓拍，命令如下：
+其中${target_class_index_list}是一个整型数组，其中存的是你想要检测的类的类别号。拍摄下来的图像以拍摄时间为文件名，依次存储在bin/cap文件夹中。比如，你可以用在MSCOCO上预训练好的模型，在摄像头1的画面中，以阈值0.5和抓拍间隔10秒，对人、猫和狗这三个类别（类别号分别是0，15，16）进行抓拍，命令如下：
 ```
-$ ./AI_camera ../../darknet/cfg/yolov3.cfg ../../darknet/weights/yolov3.weights 0.5 1 0 15 16
+$ ./AI_camera ../../darknet/cfg/yolov3.cfg ../../darknet/weights/yolov3.weights 0.5 10 1 0 15 16
 ```
 
 你也可以运行python示例，跟上面的C++版本的示例用法很相似：

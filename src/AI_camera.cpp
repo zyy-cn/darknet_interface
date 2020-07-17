@@ -17,7 +17,10 @@ using namespace std;
 
 int FRAME_WINDOW_WIDTH = 320;
 int FRAME_WINDOW_HEIGHT = 240;
+int CAPTURE_INTERVAL = 1;
 using namespace cv;
+
+int last_save_time = -1;
 
 void get_Beijing_time(int* year, int* month, int* day, int* hour, int* min, double* sec)
 {
@@ -106,7 +109,12 @@ void detect_mat(Mat frame_bgr, float* detections_output, int* num_output_class, 
     print_detections(detections, *num_output_class);
     if(is_target_detected(detections_output, * num_output_class, target_class_index_list))
     {
-        save_img_by_time(frame_bgr);
+        int current_time = what_is_the_time_now();
+        if(current_time - last_save_time > CAPTURE_INTERVAL)
+        {
+            last_save_time = current_time;
+            save_img_by_time(frame_bgr);
+        }
     }
 
     if(time_consumed)
@@ -159,10 +167,10 @@ int main(int argc, char** argv)
     if (argc < 6)
     {
         cout << "Usage: " << endl << "  $ "
-        << argv[0] << " ${cfg_path} ${weight_path} ${thresh} ${webcam_index} ${target_class_index_list}" << endl << endl
+        << argv[0] << " ${cfg_path} ${weight_path} ${thresh} ${capture_interval} ${webcam_index} ${target_class_index_list}" << endl << endl
         << "${target_class_index_list} is an integer vector in which class index of targets you want to detected is stored. Image captured is stored in bin/cap renamed by time." << endl
-        << "For instance, you can detect person, cat and dog(class_id is 0, 15 and 16) using model trained on MSCOCO(can be downloaded in https://pjreddie.com/darknet/yolo/) with thresh 0.5 through camera 1 by running:" << endl << endl << "  $ "
-        << argv[0] << " ../../darknet/cfg/yolov3.cfg ../../darknet/weights/yolov3.weights 0.5 1 0 15 16" << endl;
+        << "For instance, you can detect person, cat and dog(class_id is 0, 15 and 16) using model trained on MSCOCO(can be downloaded in https://pjreddie.com/darknet/yolo/) with thresh 0.5 and capture interval 10s through camera 1 by running:" << endl << endl << "  $ "
+        << argv[0] << " ../../darknet/cfg/yolov3.cfg ../../darknet/weights/yolov3.weights 0.5 10 1 0 15 16" << endl;
         return -1;
     }
     else
@@ -172,7 +180,8 @@ int main(int argc, char** argv)
     char *cfgfile = argv[1];
     char *weightfile = argv[2];
     float thresh = atof(argv[3]);
-    VideoCapture cap = VideoCapture(atoi(argv[4]));// init camera
+    CAPTURE_INTERVAL = atoi(argv[4]);
+    VideoCapture cap = VideoCapture(atoi(argv[5]));// init camera
     for(int i = 0; i < num_target; i++)
         target_class_index_list.push_back(atoi(argv[5+i]));
     float hier_thresh = 0.5;
