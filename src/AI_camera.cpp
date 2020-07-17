@@ -15,9 +15,13 @@ using namespace std;
 #include <opencv2/core/core.hpp> 
 #include <thread>
 
-int FRAME_WINDOW_WIDTH = 320;
-int FRAME_WINDOW_HEIGHT = 240;
+int FRAME_WINDOW_WIDTH = 640;
+int FRAME_WINDOW_HEIGHT = 480;
 int CAPTURE_INTERVAL = 1;
+bool IS_DETECT_IN_THREAD = true;
+bool IS_SHOW_IMAGE = true;
+bool IS_SHOW_DETECTIONS = true;
+
 using namespace cv;
 
 int last_save_time = -1;
@@ -121,11 +125,11 @@ void detect_mat(Mat frame_bgr, float* detections_output, int* num_output_class, 
         *time_consumed = (what_is_the_time_now() - time);
 }
 
-void show_detections(Mat frame_bgr, float* detections, int num_output_class, Rect detections_rect, vector<int> target_class_index_list, bool is_show_image, bool is_show_detections)
+void show_detections(Mat frame_bgr, float* detections, int num_output_class, Rect detections_rect, vector<int> target_class_index_list, bool IS_SHOW_IMAGE, bool IS_SHOW_DETECTIONS)
 {
-    if(is_show_image)
+    if(IS_SHOW_IMAGE)
     {
-        if(is_show_detections)
+        if(IS_SHOW_DETECTIONS)
         {
             String info;
             for(int i = 0; i < num_output_class; i++)
@@ -182,6 +186,8 @@ int main(int argc, char** argv)
     float thresh = atof(argv[3]);
     CAPTURE_INTERVAL = atoi(argv[4]);
     VideoCapture cap = VideoCapture(atoi(argv[5]));// init camera
+    cap.set(3, FRAME_WINDOW_WIDTH);
+    cap.set(4, FRAME_WINDOW_HEIGHT);
     for(int i = 0; i < num_target; i++)
         target_class_index_list.push_back(atoi(argv[5+i]));
     float hier_thresh = 0.5;
@@ -190,11 +196,6 @@ int main(int argc, char** argv)
     
     float *detections;
     Rect detections_rect;
-
-
-    bool is_detect_in_thread = true;
-    bool is_show_image = true;
-    bool is_show_detections = true;
 
     detector_init(cfgfile, weightfile);
 
@@ -209,7 +210,7 @@ int main(int argc, char** argv)
     while(cap.read(frame_bgr))
     {
         // --- detect objects ---
-        if(!is_detect_in_thread)
+        if(!IS_DETECT_IN_THREAD)
         {
             cout << endl << "------ detect begin ------" << endl;
             detect_mat(frame_bgr, detections, &num_output_class, &time_consumed, thresh, hier_thresh, target_class_index_list);
@@ -236,7 +237,7 @@ int main(int argc, char** argv)
         // }
         
         // --- show detections ---
-        show_detections(frame_bgr, detections, num_output_class, detections_rect, target_class_index_list, is_show_image, is_show_detections);
+        show_detections(frame_bgr, detections, num_output_class, detections_rect, target_class_index_list, IS_SHOW_IMAGE, IS_SHOW_DETECTIONS);
         if(waitKey(30) >=0)
             break;
     }

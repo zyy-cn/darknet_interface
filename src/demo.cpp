@@ -12,8 +12,11 @@ using namespace std;
 #include <opencv2/core/core.hpp> 
 #include <thread>
 
-int FRAME_WINDOW_WIDTH = 320;
-int FRAME_WINDOW_HEIGHT = 240;
+int FRAME_WINDOW_WIDTH = 640;
+int FRAME_WINDOW_HEIGHT = 480;
+bool IS_DETECT_IN_THREAD = false;
+bool IS_SHOW_IMAGE = true;
+bool IS_SHOW_DETECTIONS = true;
 using namespace cv;
 
 void detect_mat(Mat frame_bgr, float* detections_output, int* num_output_class, double* time_consumed, float thresh, float hier_thresh)
@@ -48,11 +51,11 @@ void detect_mat(Mat frame_bgr, float* detections_output, int* num_output_class, 
         *time_consumed = (what_is_the_time_now() - time);
 }
 
-void show_detection(Mat frame_bgr, float* detections, int num_output_class, Rect detections_rect, bool is_show_image, bool is_show_detections)
+void show_detection(Mat frame_bgr, float* detections, int num_output_class, Rect detections_rect, bool IS_SHOW_IMAGE, bool IS_SHOW_DETECTIONS)
 {
-    if(is_show_image)
+    if(IS_SHOW_IMAGE)
     {
-        if(is_show_detections)
+        if(IS_SHOW_DETECTIONS)
         {
             String info;
             for(int i = 0; i < num_output_class; i++)
@@ -110,11 +113,6 @@ int main(int argc, char** argv)
 #endif
 
 
-    bool is_detect_in_thread = false;
-    bool is_show_image = true;
-    bool is_show_detections = true;
-
-
     detector_init(cfgfile, weightfile);
 
     // ====== detect in image ======
@@ -141,7 +139,7 @@ int main(int argc, char** argv)
 #ifdef OPENCV
             // show detections using opencv
             show_detection(imread(image_path), detections, num_output_class, 
-                            detections_rect, is_show_image, is_show_detections);
+                            detections_rect, IS_SHOW_IMAGE, IS_SHOW_DETECTIONS);
 #else
             cout << "compile with OpenCV to show detections" << endl << endl;
 #endif
@@ -159,6 +157,8 @@ int main(int argc, char** argv)
     {
         cout << "detect webcam" << endl;
         cap = VideoCapture(atoi(argv[5]));// init camera
+        cap.set(3, FRAME_WINDOW_WIDTH);
+        cap.set(4, FRAME_WINDOW_HEIGHT);
     }
     if(!cap.isOpened())
     {
@@ -170,7 +170,7 @@ int main(int argc, char** argv)
     while(cap.read(frame_bgr))
     {
         // --- detect objects ---
-        if(!is_detect_in_thread)
+        if(!IS_DETECT_IN_THREAD)
         {
             cout << endl << "------ detect begin ------" << endl;
             detect_mat(frame_bgr, detections, &num_output_class, &time_consumed, thresh, hier_thresh);
@@ -191,7 +191,7 @@ int main(int argc, char** argv)
         }
         
         // --- show detections ---
-        show_detection(frame_bgr, detections, num_output_class, detections_rect, is_show_image, is_show_detections);
+        show_detection(frame_bgr, detections, num_output_class, detections_rect, IS_SHOW_IMAGE, IS_SHOW_DETECTIONS);
         if(waitKey(30) >=0)
             break;
     }
