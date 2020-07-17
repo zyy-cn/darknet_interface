@@ -16,15 +16,18 @@ int FRAME_WINDOW_WIDTH = 320;
 int FRAME_WINDOW_HEIGHT = 240;
 using namespace cv;
 
-void detect_mat(Mat frame_detect, float* detections_output, int* num_output_class, double* time_consumed, float thresh, float hier_thresh)
+void detect_mat(Mat frame_bgr, float* detections_output, int* num_output_class, double* time_consumed, float thresh, float hier_thresh)
 {
     double time = what_is_the_time_now();
 
+    cv::Mat frame;
+    cv::cvtColor(frame_bgr, frame, cv::COLOR_RGB2BGR);
+
     // do detect in an unsigned char* data buffer getted from Mat::data or IplImage.imageData
-    unsigned char* data = (unsigned char*)frame_detect.data;
-    int w = frame_detect.cols;
-    int h = frame_detect.rows;
-    int c = frame_detect.channels();
+    unsigned char* data = (unsigned char*)frame.data;
+    int w = frame.cols;
+    int h = frame.rows;
+    int c = frame.channels();
     float* detections = test_detector_uchar(data, w, h, c, thresh, hier_thresh, num_output_class);
     for(int i = 0; i < *num_output_class; i++)
     {
@@ -45,7 +48,7 @@ void detect_mat(Mat frame_detect, float* detections_output, int* num_output_clas
         *time_consumed = (what_is_the_time_now() - time);
 }
 
-void show_detection(Mat frame, float* detections, int num_output_class, Rect detections_rect, bool is_show_image, bool is_show_detections)
+void show_detection(Mat frame_bgr, float* detections, int num_output_class, Rect detections_rect, bool is_show_image, bool is_show_detections)
 {
     if(is_show_image)
     {
@@ -59,19 +62,19 @@ void show_detection(Mat frame, float* detections, int num_output_class, Rect det
                 detections_rect.width = detections[i*6+4];
                 detections_rect.height = detections[i*6+5];
                 if(detections[i*6+0] == 0) // person
-                    rectangle(frame, detections_rect, CV_RGB(255, 0, 0), 4, 8, 0);
+                    rectangle(frame_bgr, detections_rect, CV_RGB(255, 0, 0), 4, 8, 0);
                 else if(detections[i*6+0] == 62 || detections[i*6+0] == 63) // tvmonitor && laptop
-                    rectangle(frame, detections_rect, CV_RGB(0, 0, 255), 4, 8, 0);
+                    rectangle(frame_bgr, detections_rect, CV_RGB(0, 0, 255), 4, 8, 0);
                 else if(detections[i*6+0] == 28 || detections[i*6+0] == 56)//  suitcase && chair
-                    rectangle(frame, detections_rect, CV_RGB(0, 255, 0), 4, 8, 0);
+                    rectangle(frame_bgr, detections_rect, CV_RGB(0, 255, 0), 4, 8, 0);
                 else
-                    rectangle(frame, detections_rect, CV_RGB(0, 0, 0), 4, 8, 0);
+                    rectangle(frame_bgr, detections_rect, CV_RGB(0, 0, 0), 4, 8, 0);
                 info = "cls:"+ to_string(int(detections[i*6+0])) +", conf:"+ to_string((int)round(detections[i*6+1]*100)) +"%";
-                putText(frame, info, Point(detections_rect.x, detections_rect.y-10), FONT_HERSHEY_SIMPLEX, 1, Scalar(0,255,0), 2, 8);
+                putText(frame_bgr, info, Point(detections_rect.x, detections_rect.y-10), FONT_HERSHEY_SIMPLEX, 1, Scalar(0,255,0), 2, 8);
             }
         }
         namedWindow("detections", cv::WINDOW_AUTOSIZE);
-        imshow("detections", frame);
+        imshow("detections", frame_bgr);
         waitKey(1);
     }
 }
@@ -162,15 +165,15 @@ int main(int argc, char** argv)
         cout << "No video stream captured!" << endl;
         return -1;
     }
-    Mat frame;
+    Mat frame_bgr;
     detections = (float*)calloc(255*6, sizeof(float));
-    while(cap.read(frame))  
+    while(cap.read(frame_bgr))
     {
         // --- detect objects ---
         if(!is_detect_in_thread)
         {
             cout << endl << "------ detect begin ------" << endl;
-            detect_mat(frame, detections, &num_output_class, &time_consumed, thresh, hier_thresh);
+            detect_mat(frame_bgr, detections, &num_output_class, &time_consumed, thresh, hier_thresh);
             cout << "time_consumed: " << (float)time_consumed 
                 << "s, frame_rate: " << 1/(float)time_consumed << " frame/s" << endl;
         }
@@ -181,14 +184,14 @@ int main(int argc, char** argv)
                 cout << "time_consumed: " << (float)time_consumed 
                      << "s, frame_rate: " << 1/(float)time_consumed << " frame/s" << endl;
                 cout << endl << "------ detect begin ------" << endl;
-                thread t(detect_mat, frame.clone(), detections, &num_output_class, &time_consumed, thresh, hier_thresh);
+                thread t(detect_mat, frame_bgr.clone(), detections, &num_output_class, &time_consumed, thresh, hier_thresh);
                 t.detach();
                 time_consumed = -1;
             }
         }
         
         // --- show detections ---
-        show_detection(frame, detections, num_output_class, detections_rect, is_show_image, is_show_detections);
+        show_detection(frame_bgr, detections, num_output_class, detections_rect, is_show_image, is_show_detections);
         if(waitKey(30) >=0)
             break;
     }

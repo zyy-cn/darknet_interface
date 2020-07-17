@@ -36,14 +36,14 @@ void detector_init(char *cfgfile, char *weightfile)
 #ifdef GPU
     cuda_set_device(0);
 #endif
-    net = parse_network_cfg_custom(cfgfile, 1); // set batch=1
-
-    if(weightfile){
+    net = parse_network_cfg_custom(cfgfile, 1, 1); // set batch=1
+    if (weightfile) {
         load_weights(&net, weightfile);
     }
-    layer l = net.layers[net.n - 1];
-
+    int benchmark_layers = 0;
+    net.benchmark_layers = benchmark_layers;
     fuse_conv_batchnorm(net);
+    calculate_binary_weights(net);
     srand(2222222);
     return;
 }
@@ -58,22 +58,52 @@ double what_is_the_time_now()
     return what_time_is_it_now() + 8*60*60; // change to Beijing time
 }
 
+detection_with_class* get_actual_detections_without_name(detection *dets, int dets_num, float thresh, int* selected_detections_num)
+{
+    int selected_num = 0;
+    detection_with_class* result_arr = (detection_with_class*)xcalloc(dets_num, sizeof(detection_with_class));
+    int i;
+    for (i = 0; i < dets_num; ++i) {
+        int best_class = -1;
+        float best_class_prob = thresh;
+        int j;
+        for (j = 0; j < dets[i].classes; ++j) {
+            if (dets[i].prob[j] > best_class_prob) {
+                best_class = j;
+                best_class_prob = dets[i].prob[j];
+            }
+        }
+        if (best_class >= 0) {
+            result_arr[selected_num].det = dets[i];
+            result_arr[selected_num].best_class = best_class;
+            ++selected_num;
+        }
+    }
+    if (selected_detections_num)
+        *selected_detections_num = selected_num;
+    return result_arr;
+}
+
+
 float* detect(image im, float thresh, float hier_thresh, int* num_output_class)
 {
     float nms=.45;	// 0.4F
-    int letterbox = 0;
+    int letter_box = 0;
     image sized = resize_image(im, net.w, net.h);
-    layer l = net.layers[net.n-1];
+    layer l = net.layers[net.n - 1];
 
     float *X = sized.data;
     network_predict(net, X);
     int nboxes = 0;
-    detection *dets = get_network_boxes(&net, im.w, im.h, thresh, hier_thresh, 0, 1, &nboxes, letterbox);
+    detection *dets = get_network_boxes(&net, im.w, im.h, thresh, hier_thresh, 0, 1, &nboxes, letter_box);
     // printf("in detect, nboxes is: %d\n", nboxes);
-    if (nms) do_nms_sort(dets, nboxes, l.classes, nms);
+    if (nms) {
+        if (l.nms_kind == DEFAULT_NMS) do_nms_sort(dets, nboxes, l.classes, nms);
+        else diounms_sort(dets, nboxes, l.classes, nms, l.nms_kind, l.beta_nms);
+    }
 
     int selected_detections_num;
-    detection_with_class* selected_detections = get_actual_detections(dets, nboxes, thresh, &selected_detections_num);
+    detection_with_class* selected_detections = get_actual_detections_without_name(dets, nboxes, thresh, &selected_detections_num);
 
     // save output
     qsort(selected_detections, selected_detections_num, sizeof(*selected_detections), compare_by_lefts);
@@ -124,7 +154,7 @@ float* test_detector_file(char *filename, float thresh, float hier_thresh, int* 
 float* test_detector_uchar(unsigned char *data, int w, int h, int c, float thresh, float hier_thresh, int* num_output_class)
 {
     image im = make_image(w, h, c);
-    // bbb...bbbggg...gggrrr...rrr
+    // rgbrgb...rgb => rrr...rrrggg...gggbbb...bbb
     int i, j, k;
     for(i = 0; i < h; ++i)
         for(k= 0; k < c; ++k)

@@ -4,6 +4,9 @@
 ## Demo GIF
 [Click here to view demo](https://github.com/zyy-cn/demo_image/tree/master/darknet_interface)
 
+## Update
+2020.07.16 Yolo_v4 is available.
+
 ## Interface Functions Discription
 #### void detector_init(char *cfgfile, char *weightfile)
 - brief:        initiate an detector into the memory by loading specific network configuration and pretrained weight file.
@@ -158,6 +161,10 @@ $ python detect_dir_img.py ${cfg} ${weights} ${thresh} ${input directory} ${outp
 
 ## 演示动画
 [点击这里观看演示](https://github.com/zyy-cn/demo_image/tree/master/darknet_interface)
+
+
+## 更新
+2020.07.16 支持YOLO_V4.
 
 ## 接口函数描述
 #### void detector_init(char *cfgfile, char *weightfile)
