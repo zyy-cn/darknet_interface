@@ -28,7 +28,8 @@ def main(argv):
         # ====== detect ======
         cv2.namedWindow("show", 0)
         while True:
-            ret, frame = cap.read()
+            ret, frame_bgr = cap.read()
+            frame = cv2.cvtColor(frame_bgr, cv2.COLOR_BGR2RGB)
             print('==== detect begin ====   ')
             # ====== load frames from video ======
             if ret == True:
@@ -52,17 +53,17 @@ def main(argv):
                     height = int(detections[i * 6 + 5])
                     print(str(category)+':'+str(int(round(confidence*100)))+'%'+'  (left_x:' + str(x_lt)+'  top_y:'+str(y_lt)+'  width:'+str(width)+'  height:'+str(height)+')')
                     if detections[i * 6 + 0] == 0: # person, red
-                        cv2.rectangle(frame, (int(x_lt), int(y_lt)), (int(x_lt) + int(width), int(y_lt ) + int(height)), (0, 0, 255), 2)
+                        cv2.rectangle(frame_bgr, (int(x_lt), int(y_lt)), (int(x_lt) + int(width), int(y_lt ) + int(height)), (0, 0, 255), 2)
                     elif detections[i * 6 + 0] == 62 or detections[i * 6 + 0] == 63 : # tvmonitor && laptop, blue
-                        cv2.rectangle(frame, (int(x_lt), int(y_lt)), (int(x_lt) + int(width), int(y_lt ) + int(height)), (255, 0, 0), 2)
+                        cv2.rectangle(frame_bgr, (int(x_lt), int(y_lt)), (int(x_lt) + int(width), int(y_lt ) + int(height)), (255, 0, 0), 2)
                     elif detections[i * 6 + 0] == 28 or detections[i * 6 + 0] == 56 : # suitcase && chair, green
-                        cv2.rectangle(frame, (int(x_lt), int(y_lt)), (int(x_lt) + int(width), int(y_lt ) + int(height)), (0, 255, 0), 2)
+                        cv2.rectangle(frame_bgr, (int(x_lt), int(y_lt)), (int(x_lt) + int(width), int(y_lt ) + int(height)), (0, 255, 0), 2)
                     else:
-                        cv2.rectangle(frame, (int(x_lt), int(y_lt)), (int(x_lt) + int(width), int(y_lt ) + int(height)), (0, 0, 0), 2)
-                    cv2.putText(frame,str(category)+':'+str(int(round(confidence*100)))+'%',(x_lt,y_lt-10),cv2.FONT_HERSHEY_SIMPLEX,1,(0,255,0),2,8)
+                        cv2.rectangle(frame_bgr, (int(x_lt), int(y_lt)), (int(x_lt) + int(width), int(y_lt ) + int(height)), (0, 0, 0), 2)
+                    cv2.putText(frame_bgr,str(category)+':'+str(int(round(confidence*100)))+'%',(x_lt,y_lt-10),cv2.FONT_HERSHEY_SIMPLEX,1,(0,255,0),2,8)
                 print('frame_rate:   ' + str(1/(detector.what_is_the_time_now()-time)) + ' frame/s')
                 print(' ')
-                cv2.imshow("show", frame)
+                cv2.imshow("show", frame_bgr)
                 cv2.waitKey(1)
             else:
                 break

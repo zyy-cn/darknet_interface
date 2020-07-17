@@ -1,3 +1,5 @@
 bin/*
 bin/cap/*
 lib/*
+/.idea
+script/.idea
