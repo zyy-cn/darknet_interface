@@ -189,7 +189,7 @@ int main(int argc, char** argv)
     cap.set(3, FRAME_WINDOW_WIDTH);
     cap.set(4, FRAME_WINDOW_HEIGHT);
     for(int i = 0; i < num_target; i++)
-        target_class_index_list.push_back(atoi(argv[5+i]));
+        target_class_index_list.push_back(atoi(argv[6+i]));
     float hier_thresh = 0.5;
     int num_output_class = 0;
     double time_consumed = 0;
