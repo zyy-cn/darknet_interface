@@ -179,7 +179,7 @@ int main(int argc, char** argv)
     }
     else
 #ifdef OPENCV
-    num_target = argc - 5;
+    num_target = argc - 6;
     // ====== init ======
     char *cfgfile = argv[1];
     char *weightfile = argv[2];
